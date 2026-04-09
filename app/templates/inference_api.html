@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>API Reference</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <style>
+      .card code {
+        padding:20px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center-container" >
+      <div class="container">
+        <div class="card">
+            <div class="title-grid ">
+              <div>
+                <h1>API Reference</h1>
+                <p class="small">Model: <span class="success">{{model_name}}</span></p>
+                <p>{{ message }}</p>
+              </div>
+              
+              <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+            </div>
+            
+            <br/><br/>
+
+            <div class="card">
+
+              <p>
+                <p>Image File</p>
+                <code >
+                  curl -s -X POST <span style="color:yellow">"http://127.0.0.1:8000/api/infer-image?conf=0.25" </span> \ <br/>
+                  -F <span style="color:green">"file=@/Users/bernard/Documents/Data/Sample/images/highway.jpg" </span> \ <br/>
+                  | python -m json.tool 
+                </code>
+              </p>
+              <br/>
+              <hr/>
+              <p>
+                <p>Image URL</p>
+                <code>
+                  curl -s -X POST <span style="color:yellow">"http://127.0.0.1:8000/api/infer-url"</span> \ <br/>
+                    -H "Content-Type: application/json" \ <br/>
+                    -d <span style="color:green">'{"url":"https://image.cnbcfm.com/api/v1/image/106947859-GettyImages-167503543.jpg"}'</span> \ <br/>
+                    | python -m json.tool
+                </code>
+              </p>      
+              <br/>
+              <hr/>
+              <p>
+                <p>Video File</p>
+                <code>
+                  curl -s -X POST <span style="color:yellow">"http://127.0.0.1:8000/api/infer-video?max_frames=200&conf=0.25"</span> \ <br/>
+                  -F <span style="color:green">"file=@/Users/bernard/Documents/Data/Sample/images/cars.mp4"</span> \ <br/>
+                  | python -m json.tool
+                </code>
+              </p>    
+              <br/>
+              <hr/>
+              <p>
+                <p>Video URL</p>
+                <code>
+                  curl -s -X POST <span style="color:yellow">"http://127.0.0.1:8000/api/infer-video-url?max_frames=200&conf=0.25"</span> \ <br/>
+                  -H "Content-Type: application/json" \ <br/>
+                  -d <span style="color:green">'{"url":"https://image.cnbcfm.com/api/v1/video/dummy.mp4"}'</span> \ <br/>
+                  | python -m json.tool
+                </code>
+              </p>    
+              <br/>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

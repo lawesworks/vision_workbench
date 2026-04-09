@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Vision Workbench</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles-menu.css') }}">
+  </head>
+  <body>
+    <div class="menu-shell">
+      <div class="menu-panel">
+        <div class="menu-header">
+          <h1 class="menu-title">Vision Workbench</h1>
+          <p class="menu-subtitle">{{ message }}</p>
+        
+          <br/>
+          <hr/>
+
+          <div class="menu-meta">
+            <p class="menu-model offscree">Model: <span class="success">{{ model_name }}</span></p>
+          </div>
+        </div>
+
+        <section class="menu-section">
+          <h2 class="menu-section-title">Inference<p class="smaller offscreen">{{message0}}</p></h2>
+
+          <div class="menu-grid">
+            <button class="menu-tile" type="button" onclick="location.href='/inference-uploaded'">
+              <span class="menu-tile-title">Image </span>
+              <span class="menu-tile-text">Run inference against upload images</span>
+            </button>
+
+            <button class="menu-tile" type="button" onclick="location.href='/inference-url'">
+              <span class="menu-tile-title">URL </span>
+              <span class="menu-tile-text">Run inference against online images.</span>
+            </button>
+
+
+
+            <button class="menu-tile" type="button" onclick="location.href='/inference-video'">
+              <span class="menu-tile-title">Video </span>
+              <span class="menu-tile-text">Real-time inference video playback</span>
+            </button>
+
+            <button class="menu-tile" type="button" onclick="location.href='/inference-webcam'">
+              <span class="menu-tile-title">Webcam </span>
+              <span class="menu-tile-text">Run live inference on connected webcam.</span>
+            </button>
+
+            <button class="menu-tile" type="button" onclick="location.href='/inference-rtsp'">
+              <span class="menu-tile-title">RTSP </span>
+              <span class="menu-tile-text">Real-time inference on RTSP live-stream.</span>
+            </button>
+
+            <button class="menu-tile" type="button" onclick="location.href='/inference-api'">
+              <span class="menu-tile-title">API </span>
+              <span class="menu-tile-text">Run infrence requests programmatically</span>
+            </button>
+
+            <button class="menu-tile offscreen" type="button" onclick="location.href='/inference-drone'">
+              <span class="menu-tile-title">Drone </span>
+              <span class="menu-tile-text">Run inference on Drone Live Stream</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="menu-section">
+          <h2 class="menu-section-title">Training <p class="smaller offscreen">{{message1}}</p></h2>
+
+          <div class="menu-grid">
+            <button class="menu-tile" type="button" onclick="location.href='/train-local'">
+              <span class="menu-tile-title">Local </span>
+              <span class="menu-tile-text">Train using resources on this machine.</span>
+            </button>
+
+            <button class="menu-tile" type="button" onclick="location.href='/train-google'">
+              <span class="menu-tile-title">Google </span>
+              <span class="menu-tile-text">Launch training process in Google Colab</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="menu-section">
+          <h2 class="menu-section-title">Settings<p class="smaller offscreen">{{message2}}</p></h2>
+
+          <div class="menu-grid">
+            <button class="menu-tile" type="button" onclick="location.href='/page-config'">
+              <span class="menu-tile-title">Model </span>
+              <span class="menu-tile-text">Inference Configuration</span>
+            </button>
+            <button class="menu-tile" type="button" onclick="location.href='/page-option'">
+              <span class="menu-tile-title">Options </span>
+              <span class="menu-tile-text">Preferences and Settings</span>
+            </button>
+            <button class="menu-tile" type="button" onclick="location.href='/page-webhook'">
+              <span class="menu-tile-title">Webhook</span>
+              <span class="menu-tile-text">Notify, Trigger, and Alert</span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

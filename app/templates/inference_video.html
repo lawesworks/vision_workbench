@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>YOLO Inference</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+  </head>
+  <body>
+    <div class="center-container" >
+      <div class="container">
+        <div class="card">
+          <div class="title-grid ">
+            <div>
+              <h1>Video Inference</h1>
+              <p class="small">Model: <span class="success">{{model_name}}</span></p>
+              <p>{{ message }}</p>
+            </div>
+            
+            <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+          </div>
+          
+          <p class="small" id="status"></p>
+          <br/>
+
+          <div class="card offscreen">
+            <h3 class="msg">Video API Inference </h3>
+            <br/>
+            <hr/>
+            <p>
+              <p>Video File</p>
+              <code>
+                curl -s -X POST <span style="color:yellow">"http://127.0.0.1:8000/api/infer-video?max_frames=200&conf=0.25"</span> \ <br/>
+                -F <span style="color:darkgreen">"file=@/Users/bernard/Documents/Data/Sample/images/cars.mp4"</span> \ <br/>
+                | python -m json.tool
+              </code>
+            </p>    
+            <br/>
+            
+          </div>
+
+          <div class="card">
+            <p class="msg">Upload Video</p>
+              <form id="uploadForm" action="" method="post" enctype="multipart/form-data">
+                <div class="input-grid">
+                  <input type="file" id="videoFile" name="file" accept="video/*" required />
+                  <button type="submit">Start</button>
+                  
+                </div>
+                <br/>
+                <div id="videoInfo" class="input-grid offscreen">
+                  <div class="small card" style="font-size: 12px; display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin:2px; padding: 11px;">
+                    <span id="frame_count"></span> <span id="fps_in"></span> <span id="width"></span> <span id="height"></span>
+                  </div>
+                  <button id="stopBtn" type="button">Stop</button>
+                </div>
+              </form>
+   
+            
+
+            <img
+                id="stream"
+                style="width:100%;  border: 1px solid #ccc; display: none;"
+                alt="Streaming inference"
+            />
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const fileInput = document.getElementById("videoFile");
+        const statusDiv = document.getElementById("status");
+        const stopBtn = document.getElementById("stopBtn");
+
+        const elem_Frame_Count = document.getElementById("frame_count");
+        const elem_FPS_in = document.getElementById("fps_in");
+        const elem_Width = document.getElementById("width");
+        const elem_Height= document.getElementById("height");
+        const elem_VideoInfo = document.getElementById("videoInfo");
+
+        let img = document.getElementById("stream");
+        let streamActive = false;
+
+        
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            document.getElementById("stopBtn").click();
+            elem_VideoInfo.classList.add("offscreen");
+
+            const file = fileInput.files[0];
+            if (!file) {
+                statusDiv.textContent = "Please choose a file.";
+                return;
+            }
+
+            statusDiv.textContent = "Uploading...";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("/upload-video", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || "Upload failed.");
+                }
+
+                const streamUrl = `/stream/uploaded?filename=${encodeURIComponent(data.filename)}`;
+
+                streamActive = true;
+                statusDiv.textContent = "Starting stream...";
+
+                img.style.display = "block";
+                img.src = streamUrl;
+
+                img.onload = () => {
+                    if (streamActive) {
+                        statusDiv.textContent = "Streaming...";
+                        statusDiv.classList.remove("stopped","processing","danger");
+                        statusDiv.classList.add("success");
+                        elem_Frame_Count.innerHTML = "<span style='font-weight:bold'>Frames:</span>&nbsp; "+data.frame_count;
+                        elem_FPS_in.innerHTML = "<span style='font-weight:bold'>Frames/sec:</span>&nbsp;" + data.fps_in;
+                        elem_Height.innerHTML = "<span style='font-weight:bold'>Height:</span>&nbsp;"+data.height;
+                        elem_Width.innerHTML = "<span style='font-weight:bold'>Width: </span>&nbsp;"+ data.width;
+                        elem_VideoInfo.classList.remove("offscreen");
+                    }
+                };
+
+                img.onerror = () => {
+                    if (streamActive) {
+                        statusDiv.textContent = "Stream failed.";
+                        statusDiv.classList.remove("success","processing","stopped");
+                        statusDiv.classList.add("danger");
+                    }
+                };
+
+            } catch (err) {
+                statusDiv.textContent = `Error: ${err.message}`;
+            }
+        });
+
+        stopBtn.onclick = () => {
+
+
+            elem_VideoInfo.classList.add("offscreen");
+
+            streamActive = false;
+
+            // Clear current request
+            img.src = "";
+            img.removeAttribute("src");
+            img.style.display = "none";
+            statusDiv.textContent = "Stream stopped.";
+            statusDiv.classList.remove("success","processing","danger");
+            statusDiv.classList.add("stopped");
+
+            // Replace the img element entirely to break the MJPEG connection cleanly
+            const newImg = img.cloneNode(false);
+            img.parentNode.replaceChild(newImg, img);
+            img = newImg;
+        };
+    </script>
+
+  </body>
+</html>

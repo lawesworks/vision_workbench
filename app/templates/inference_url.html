@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>YOLO Inference</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+  </head>
+  <body>
+
+    <div class="center-container" >
+      <div class="container">
+          <div class="card">
+            <div class="title-grid ">
+              <div>
+                <h1>URL Inference</h1>
+                <p class="small">Model: <span class="success">{{model_name}}</span></p>
+                <p class=" msg {{status}}">{{ message }}</p>
+              </div>
+              
+              <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+            </div>
+            
+            <br/><br/>
+
+            <div class="card">
+              <p class="msg">Enter URL</p>
+              <form action="/infer-url" method="post" enctype="multipart/form-data" style="margin-top: 12px;">
+                <div class="input-grid">
+                  <div>
+                  <input type="text" name="image_url" placeholder="https://example.com/image.jpg" required />
+                  </div>
+                  <button type="submit">Run</button>
+                </div>
+              </form>
+              <br/>
+              
+              <div class="input-grid">
+                <p class="small msg ">
+                  {% if status == "success" %}
+                    <span class="success">URL: </span> {{ url }}
+                  {%  endif %}
+                </p>
+                <p></p>
+              </div>
+              
+            </div>
+
+
+
+
+
+          {% if uploaded_url %}
+            <div class="card-grid">
+              <div class="card">
+                <h2>Uploaded</h2>
+                <img src="{{ uploaded_url }}" alt="Uploaded image" />
+
+                <div class="caption">
+                  <p><code>{{ uploaded_url }}</code></p>
+                </div>
+              </div>
+
+              {% if annotated_url %}
+                <div class="card">
+                  <h2>Annotated</h2>
+                  <img src="{{ annotated_url }}" alt="Annotated output" />
+              
+                  <div class="caption">
+                    <p><code>{{ annotated_url }}</code></p>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="card">
+              <h2>Counts</h2>
+              {% if class_counts and class_counts|length > 0 %}
+                {% for k, v in class_counts.items() %}
+                  <span class="pill"><strong>{{ k }}</strong>: {{ v }}</span>
+                {% endfor %}
+              {% else %}
+                <p class="small">No detections.</p>
+              {% endif %}
+            </div>
+
+            <div class="card">
+              <h2>Detections</h2>
+              {% if detections and detections|length > 0 %}
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Class</th>
+                      <th>Conf</th>
+                      <th>Box (x1,y1,x2,y2)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for d in detections %}
+                      <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ d.class_name }}</td>
+                        <td>{{ "%.3f"|format(d.confidence) }}</td>
+                        <td>
+                          {{ "%.1f"|format(d.box_xyxy[0]) }},
+                          {{ "%.1f"|format(d.box_xyxy[1]) }},
+                          {{ "%.1f"|format(d.box_xyxy[2]) }},
+                          {{ "%.1f"|format(d.box_xyxy[3]) }}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <p class="small">No detections to show.</p>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

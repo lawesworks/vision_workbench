@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Armada YOLO Overlay",
+  "version": "1.0.0",
+  "description": "Overlay a local YOLO FastAPI app inside Armada help-center pages.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://console.armada.ai/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "action": {
+    "default_title": "Toggle Armada YOLO Overlay"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://console.armada.ai/my-apps*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

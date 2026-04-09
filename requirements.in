@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+ultralytics
+opencv-python
+pillow
+numpy
+httpx
+google
+google-auth
+google-api-python-client

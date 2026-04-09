@@ -1,0 +1,80 @@
+# ---------------------------
+# Python
+# ---------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling / test caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---------------------------
+# Secrets / local credentials
+# ---------------------------
+.env
+.env.*
+auth/
+auth/*.json
+
+# Optional: ignore local-only config variants
+# config.local.json
+# yolo_config.local.json
+
+# ---------------------------
+# Model weights
+# ---------------------------
+models/*.pt
+
+# Other model/artifact files that could be generated in the future
+*.onnx
+*.engine
+*.torchscript
+*.tflite
+*.pb
+
+# ---------------------------
+# App runtime uploads / outputs
+# ---------------------------
+app/static/uploads/
+app/static/outputs/
+
+# General training / inference artifacts
+runs/
+outputs/
+uploads/
+
+# ---------------------------
+# Logs / temp
+# ---------------------------
+*.log
+tmp/
+temp/router = APIRouter()__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+
+# Models
+models/*.pt
+
+# Outputs
+runs/
+uploads/
+
+# OS
+.DS_Store

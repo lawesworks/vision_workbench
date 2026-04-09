@@ -1,0 +1,2029 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>{{page_title}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <style>
+.instructions-shell {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  padding: 28px;
+  background: rgba(10, 46, 56, 0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(31, 122, 140, 0.22), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(17, 74, 89, 0.18), transparent 30%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(155, 188, 195, 0.08);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.section-title {
+  margin: 0 0 14px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prereq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.prereq-card {
+  background: rgba(6, 36, 44, 0.88);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 140px;
+  box-shadow: var(--shadow);
+}
+
+.prereq-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+  box-shadow: 0 10px 24px rgba(31, 122, 140, 0.28);
+  margin-bottom: 14px;
+}
+
+.prereq-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.prereq-card h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.prereq-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.step-flow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.step-flow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.step-flow::before {
+  content: "";
+  position: absolute;
+  left: 31px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(31, 122, 140, 0.12),
+    rgba(31, 122, 140, 0.85),
+    rgba(31, 122, 140, 0.12)
+  );
+}
+
+.step-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.step-marker {
+  position: relative;
+  z-index: 2;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+  box-shadow: 0 12px 26px rgba(31, 122, 140, 0.34);
+}
+
+.step-marker svg {
+  width: 28px;
+  height: 28px;
+}
+
+.step-panel {
+  background: rgba(6, 36, 44, 0.88);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 18px 16px;
+  min-height: 110px;
+  transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.step-panel:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary);
+}
+
+.step-panel.completed {
+  border-color: rgba(31, 157, 106, 0.55);
+  box-shadow: 0 0 0 1px rgba(31, 157, 106, 0.18);
+}
+
+.step-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.step-label {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.step-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(155, 188, 195, 0.08);
+}
+
+.step-status.done {
+  color: #8FE0B8;
+  border-color: rgba(31, 157, 106, 0.35);
+  background: rgba(31, 157, 106, 0.1);
+}
+
+.step-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.step-input {
+  margin-top:13px;
+}
+
+.step-input input {
+  margin-bottom:10px;
+}
+
+.step-input label {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  
+}
+
+.step-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.step-actions {
+  margin-top: 14px;
+}
+
+.step-note {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(3, 31, 38, 0.82);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.instructions-tip {
+  margin-top: 24px;
+}
+
+.instructions-tip p{
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+  padding: 20px 30px;
+  border-radius: 10px;
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.quick-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 16px;
+  border-radius: 14px;
+
+  background: rgba(6, 36, 44, 0.88);
+  border: 1px solid var(--border);
+
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.quick-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  background: rgba(10, 46, 56, 0.95);
+  box-shadow: var(--shadow);
+}
+
+.quick-link-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: #fff;
+
+  box-shadow: 0 8px 18px rgba(31, 122, 140, 0.28);
+  flex-shrink: 0;
+}
+
+.quick-link-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.quick-link-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-link-title {
+  font-size: 14px;
+}
+
+.quick-link-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.prereq-grid a {
+  font-weight: 200 !important;
+}
+
+@media (max-width: 768px) {
+  .step-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .step-flow::before {
+    display: none;
+  }
+
+  .step-marker {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .step-marker svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .step-title {
+    font-size: 18px;
+  }
+}
+
+
+
+.input-error::placeholder {
+  color: #e53935;
+}
+
+.input-error::placeholder {
+  color: #e53935;
+}
+
+
+
+.train-config-grid {
+  margin-top:25px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.config-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.config-field-full {
+  grid-column: 1 / -1;
+}
+
+.config-field > label:not(.toggle) {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  font-weight: 200;
+}
+
+.config-field small {
+  margin-top: 7px;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.train-config-status {
+  font-size: 0.92rem;
+  color: #334155;
+  min-height: 20px;
+}
+
+.train-config-status.success {
+  color: #15803d;
+}
+
+.train-config-status.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 700px) {
+  .train-config-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .config-field-full {
+    grid-column: auto;
+  }
+
+  .train-config-card {
+    padding: 20px;
+  }
+}
+
+.small-text {
+  font-size: .85rem;
+}
+
+/*
+.advanced-config {
+  display: none;
+}
+  */
+
+
+
+
+/* TOGGLE */
+/* ========================= */
+
+.toggle {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background-color: var(--primary);
+  border-radius: 15px;
+  transition: 0.3s;
+
+  display: flex;                /* center text */
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 200;
+  color: white;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 80%;
+  aspect-ratio: 1 / 1;
+  left: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--muted);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+/* default text */
+.slider::after {
+  content: "";
+  opacity: 0.85;
+  color: #fff;
+}
+
+.toggle input:checked + .slider::after {
+  color: #e0f7f5;
+  content: "";
+}
+
+.toggle input:checked + .slider {
+  background-color: var(--primary-checked);
+}
+
+.toggle input:checked + .slider.in_process {
+  background-color: var(--warning-checked);
+}
+
+.toggle input:checked + .slider::before {
+  left: calc(100% - 4%);
+  transform: translate(-100%, -50%);
+}
+
+/* your row layout */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-row .toggle {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* size options */
+.toggle.small {
+  width: 60px;
+  height: 28px;
+}
+
+.toggle.small .slider {
+  border-radius: 10px !important;
+}
+
+.toggle.medium {
+  width: 90px;
+  height: 40px;
+}
+
+.toggle.small .slider {
+  border-radius: 15px !important;
+}
+
+.toggle.large {
+  width: 100%;
+  height: 50px;
+}
+
+.toggle.small .slider {
+  border-radius: 15px !important;
+}
+
+
+
+
+
+.copy-container {
+  position: relative;
+  background-color: transparent;
+  padding-right: 40px; /* space for button */
+}
+
+.copy-container #published_URL {
+  text-align: center; color: rgb(247, 247, 118); font-weight: 200;
+}
+
+.copy-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 25px;
+  background-color: transparent !important;
+  color: white;
+  font-weight: 200;
+}
+
+.copy-btn:hover {
+  transform: translateY(-50%) scale(1.5);
+}
+
+
+
+
+/* small loader */
+/* ------------------------------------- */
+.loader-container {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  margin:0 !important;
+  padding: 0 !important;
+  margin-top:-5px;
+  /*transform: translateY(25%);*/
+  /*height: 100px;*/ /* adjust as needed */
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  padding: 0px;
+  border: 4px solid #ddd;
+  box-sizing: border-box;
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin:0 !important;
+  padding: 0 !important;
+}
+
+.fullscreen-loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 9999;
+}
+
+.full-screen-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+
+
+.hidden {
+  display: none;
+}
+
+
+
+
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-card {
+  width: min(720px, 100%);
+  max-height: 85vh;
+  overflow: hidden;
+  background-color: #4c676c;
+  opacity: 75%;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color:#e0f7f5;
+}
+
+.modal-body {
+  padding: 18px 20px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.config-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 260px) 1fr;
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.config-key {
+  font-weight: 600;
+  color: #334155;
+  word-break: break-word;
+}
+
+.config-value {
+  color: #0f172a;
+  word-break: break-word;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.config-loading,
+.config-error,
+.config-empty {
+  padding: 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.config-error {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.config-textarea {
+  width: 100%;
+  height: 300px;
+  resize: none;
+  font-family: monospace;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #151618;
+  color: #e2e8f0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+  .config-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
+
+    </style>
+  </head>
+  <body>
+
+    <!-- HOW ALERT DIV -->
+    <div id="form-alert" class="form-alert hidden"></div>
+
+    <!-- MODAL OVERLAY DIV -->
+    <div id="configModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Model Configuration</h2>
+          <button type="button" class="modal-close" onclick="closeConfigModal()">×</button>
+        </div>
+
+        <div id="configModalBody" class="modal-body">
+          <div class="config-loading">Loading configuration...</div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" onclick="closeConfigModal()">Close</button>
+          &nbsp;&nbsp;
+          <button type="button" class="btn btn-secondary" style="padding: 0px 10px;" onclick="copyConfigToClipboard(this)"><span style="font-size: 30px; padding: 0px 0px; " >&#10697; </span>Copy</button>
+          
+          
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="container instructions-shell">
+        <div class="card">
+            <div class="title-grid ">
+                <div><h1 >Train Model on Google</h1></div>
+                <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+            </div>
+        </div>
+
+      <div class="card offscreen">
+        
+        <h2 class="section-title">Setup Steps</h2>
+        <p class="page-subtitle" style="margin-bottom: 0;">
+        Follow the checklist below to prepare your environment, connect Roboflow,
+        and run the Google Colab notebook successfully.
+        </p>
+        <br/>
+        <div class="hero-content">
+          <div class="hero-badges">
+            <span class="hero-badge">Use Case</span>
+            <span class="hero-badge">Edit Template</span>
+            <span class="hero-badge">Set API Key</span>
+            <span class="hero-badge">Choose Dataset</span>
+            <span class="hero-badge">Train Model</span>
+            <span class="hero-badge">Get Weights</span>
+            <span class="hero-badge">Do Inference</span>
+            <span class="hero-badge">Tie to Armada</span>
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="card offscreen">
+        <h2 class="section-title">Quick Links</h2>
+        <p class="page-subtitle" style="margin-bottom: 18px;">
+          Resources that could be valuable to your journey
+        </p>
+
+
+        <div class="quick-links ">
+          
+          <a href="https://github.com/lawesworks/vision-model-workbench" class="quick-link" target="_blank">
+            <div class="quick-link-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.42-4.04-1.42-.55-1.37-1.33-1.73-1.33-1.73-1.09-.73.08-.72.08-.72 1.2.08 1.84 1.21 1.84 1.21 1.07 1.8 2.8 1.28 3.48.98.11-.76.42-1.28.76-1.58-2.66-.3-5.47-1.31-5.47-5.82 0-1.29.47-2.35 1.23-3.18-.12-.3-.53-1.53.12-3.18 0 0 1.01-.32 3.3 1.21a11.67 11.67 0 0 1 6 0c2.29-1.53 3.29-1.21 3.29-1.21.66 1.65.25 2.88.12 3.18.77.83 1.23 1.89 1.23 3.18 0 4.52-2.82 5.52-5.5 5.81.43.37.82 1.1.82 2.23v3.3c0 .32.21.7.83.58A12 12 0 0 0 12 .5Z"/>
+                </svg>
+            </div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">GitHub</div>
+              <div class="quick-link-subtitle">View repository</div>
+            </div>
+          </a>
+
+          <a href="https://colab.research.google.com/github/lawesworks/vision-model-workbench/blob/main/YOLO_OD_Trainer_Hands_On.ipynb" class="quick-link" target="_blank">
+            <div class="quick-link-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"/>
+                </svg>
+            </div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Googl Colab</div>
+              <div class="quick-link-subtitle">Get Template</div>
+            </div>
+          </a>
+
+          <a href="https://universe.roboflow.com/" class="quick-link" target="_blank">
+            <div class="quick-link-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3l7 4v10l-7 4-7-4V7l7-4z"></path>
+                <path d="M12 21V11"></path>
+                <path d="M19 7l-7 4-7-4"></path>
+              </svg>
+            </div>
+            <div class="quick-link-text">
+              <div class="quick-link-title">Roboflow</div>
+              <div class="quick-link-subtitle">Search datasets</div>
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+
+
+
+      <hr class="offscreen"/>
+      <div class="offscreen card instructions-tip one-grid" style="padding: 0px 10px;" id="notice-container">
+        <div class="" ><p style="text-align: center; margin:20px 10px;">Notice</p></div>
+        <div class="step-text" style="margin-top: auto; margin-bottom:auto; padding-left:20px;" id="notice-message"></div>
+      </div>
+      <hr class="offscreen"/>
+
+      <div class="card">
+        <h2 class="section-title">Prerequisites</h2>
+        <p class="page-subtitle" style="margin-bottom: 18px;">
+          Before starting, acquire free accounts for the services below.
+        </p>
+
+        <div class="prereq-grid">
+
+
+          <div class="prereq-card">
+            <div class="prereq-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3l7 4v10l-7 4-7-4V7l7-4z"></path>
+                <path d="M12 21V11"></path>
+                <path d="M19 7l-7 4-7-4"></path>
+              </svg>
+            </div>
+            <h3>Roboflow Account</h3>
+            <p>
+              Required for retrieving your API key and connecting the notebook in order to download datasets.
+            </p>
+          </div>
+          
+          <div class="prereq-card">
+            <div class="prereq-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+                <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"/>
+                </svg>
+            </div>
+            <h3>Google Account</h3>
+            <p>
+              Required to open and run Google Colab.  Once you acquire Roboflow API Key, store it as a Colab Key Secret.
+            </p>
+          </div>
+
+
+
+          <div class="prereq-card">
+            <div class="prereq-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.42-4.04-1.42-.55-1.37-1.33-1.73-1.33-1.73-1.09-.73.08-.72.08-.72 1.2.08 1.84 1.21 1.84 1.21 1.07 1.8 2.8 1.28 3.48.98.11-.76.42-1.28.76-1.58-2.66-.3-5.47-1.31-5.47-5.82 0-1.29.47-2.35 1.23-3.18-.12-.3-.53-1.53.12-3.18 0 0 1.01-.32 3.3 1.21a11.67 11.67 0 0 1 6 0c2.29-1.53 3.29-1.21 3.29-1.21.66 1.65.25 2.88.12 3.18.77.83 1.23 1.89 1.23 3.18 0 4.52-2.82 5.52-5.5 5.81.43.37.82 1.1.82 2.23v3.3c0 .32.21.7.83.58A12 12 0 0 0 12 .5Z"/>
+              </svg>
+            </div>
+            <h3>GitHub Account - <span class="processing smaller">&nbsp; Optional </span></h3>
+            <p>
+              Helpful for accessing shared notebooks, version history, and any repository content associated with the project.  
+            </p>
+          </div>
+
+        </div>
+
+        <div class="prereq-grid" style="margin-top: 16px;">
+
+
+            <div >
+                <a class="btn btn-secondary fullwidth" href="https://app.roboflow.com/settings/api" target="_blank" rel="noopener noreferrer">
+                Open Roboflow &nbsp; | &nbsp; Get API Key
+                </a>
+            </div>
+
+            <div>
+                <a class="btn btn-secondary fullwidth" href="https://colab.research.google.com/github/lawesworks/vision-model-workbench/blob/main/YOLO_OD_Trainer_Hands_On_Advanced.ipynb" target="_blank" rel="noopener noreferrer">
+                Open Colab &nbsp; | &nbsp; Set API Key 
+                </a>
+            </div>
+
+
+
+            <div>
+                <a class="btn btn-secondary fullwidth" href="https://github.com/lawesworks/vision-model-workbench" target="_blank" rel="noopener noreferrer">
+                View Repository
+                </a>
+            </div>
+        </div>
+      </div>
+
+      <div class="card step-flow-card">
+        <h2 class="section-title">Model Training Workflow</h2>
+        <p class="page-subtitle" style="margin-bottom: 20px;">
+          Work through each step in order. 
+        </p>
+        <br/>
+        <div class="step-flow">
+          <!--
+          <div class="step-item">
+                <div class="step-marker">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                </div>
+                <div class="step-panel">
+                    <div class="step-topline">
+                        <span class="step-label">Step 1</span>
+                        <span class="step-status">Required</span>
+                    </div>
+                    <h3 class="step-title">Open Template in GitHub </h3>
+                    <p class="step-text">
+                        Open the Colab notebook named: <span class="success">Vision Model Workbench</span>.
+                        You will use this template to train your own custom models. 
+                    </p>
+                    <div class="four-grid">
+                        <div class="step-actions">
+                            <a class="btn btn-primary fullwidth" href="https://github.com/lawesworks/vision-model-workbench/blob/main/YOLO_OD_Trainer_Hands_On.ipynb" target="_blank" rel="noopener noreferrer">
+                            Open GitHub
+                            </a>
+                        </div>
+                        <div class="step-note">
+                            You can then click on the icon &nbsp; <img style="width:70px; " src="https://camo.githubusercontent.com/eff96fda6b2e0fff8cdf2978f89d61aa434bb98c00453ae23dd0aab8d1451633/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667"/> 
+                            &nbsp;  to view it in Google Colab
+                        </div>
+                    </div>
+
+                </div>
+          </div>
+        
+
+          <div class="step-item">
+            <div class="step-marker">
+              <h2>1</h2>
+              <svg class="offscreen"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
+            <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+            </svg>
+            </div>
+            <div class="step-panel">
+              <div class="step-topline">
+                <span class="step-label">Step 1</span>
+                <span class="step-status">Required</span>
+              </div>
+              <h3 class="step-title">Roboflow API key</h3>
+              <p class="step-text">
+                After signing in, locate your API key in your Roboflow workspace settings.
+                You will need this key for API authentication.
+              </p>
+                <div class="four-grid">
+                    <div class="step-actions">
+                        <a class="btn btn-primary fullwidth" href="https://app.roboflow.com/settings/api" target="_blank" rel="noopener noreferrer">
+                        Roboflow API Key
+                        </a>
+                    </div>
+                    <div class="step-note offscreen">
+                        Keep your API key private and do not share it publicly in screenshots or repositories.
+                    </div>
+                    <div class="step-input" style="margin-top: 13px;" ><input type="text" id="roboflow_key" name="roboflow_key" placeholder="1234erfghu876543" required /></div>
+                </div>
+              
+            </div>
+          </div>
+        -->
+          <div class="step-item">
+            <div class="step-marker">
+              <h2>1</h2>
+              <svg class="offscreen"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3l7 4v10l-7 4-7-4V7l7-4z"></path>
+                <path d="M12 21V11"></path>
+                <path d="M19 7l-7 4-7-4"></path>
+              </svg>
+            </div>
+            <div class="step-panel">
+              <div class="step-topline">
+                <span class="step-label">Step 1</span>
+                <span class="step-status">Required</span>
+              </div>
+              <h3 class="step-title">Roboflow Dataset</h3>
+              <p class="step-text">
+                Find a dataset from Roboflow Universe that is relevant to your customer's use case.  Navigate to the page and copy the URL.  
+              </p>
+
+          
+              <div class="three-grid-reverse">
+                
+                <div class="config-field config-field-full" style="margin-bottom: 20px;">
+                  <label for="dataset_search">Dataset Search</label>
+                  <input
+                    type="text"
+                    id="dataset_search"
+                    name="dataset_search"
+                    placeholder="Keyword search for datasets"
+                  />
+                  <!--<small>Optional helper field for your own search workflow.</small>-->
+                </div>          
+                
+
+
+                <div class="config-field ">
+                  <label for="project_url">Project URL</label>
+                  <input
+                    type="text"
+                    id="project_url"
+                    name="project_url"
+                    placeholder="https://universe.roboflow.com/workspace-name/project-name"
+                    required
+                  />
+                </div>
+
+                <div class="config-field">
+                  <label for="dataset_version">Dataset Version</label>
+                  <input
+                    type="number"
+                    id="dataset_version"
+                    name="dataset_version"
+                    min="1"
+                    step="1"
+                    placeholder="1"
+                    required
+                  />
+                </div>
+
+                <div class="config-field offscreen">
+                  <label for="project_url">Roboflow API Key (Optiona)</label>
+                  <input
+                    type="text"
+                    id="roboflow_api_key"
+                    name="roboflow_api_key"
+                    placeholder="12345678901234567890"
+                    required
+                  />
+                </div>
+
+
+              </div>
+            
+              <br/>
+              <div class="step-actions offscreen">
+                <a class="btn btn-primary fullwidth" href="https://github.com/lawesworks/vision-model-workbench" target="_blank" rel="noopener noreferrer">
+                  Verify Dataset
+                </a>
+              </div>
+            </div>
+          
+          </div>
+
+          <div class="step-item" id="step2">
+            <div class="step-marker">
+              <h2>2</h2>
+              <svg class="offscreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+              </svg>
+            </div>
+            <div class="step-panel">
+              <div class="step-topline">
+                <span class="step-label">Step 2</span>
+                    <div class="toggle-row" style="margin-top: 0;"> 
+                      <label class="toggle small" style="width: 160px; margin-top: -5px;">
+                        <input id="config_toggle" type="checkbox" >
+                        <span id="config_message" class="slider">Basic</span>
+                      </label>
+                  </div>
+                <span class="step-status">Required</span>
+              </div>
+              <h3 class="step-title">Model Config</h3>
+
+              
+
+              <p class="step-text">
+                Set hyperparamters and other configure other settings used during training
+              </p>
+
+         
+              <div class="train-config-grid">
+                
+                <div class="config-field">
+                  <label for="yolo_version">Framework Version</label>
+                  <select id="yolo_version" name="yolo_version" required>
+                    <option value="yolov8" selected>YOLOv8</option>
+                    <option value="yolov9">YOLOv9</option>
+                    <option value="yolov10">YOLOv10</option>
+                    <option value="yolov11" >YOLOv11</option>
+                  </select>
+                </div>
+
+                <div class="config-field">
+                  <label for="yolo_size">Model Size</label>
+                  <select id="yolo_size" name="yolo_size" required>
+                    <option value="n">Nano</option>
+                    <option value="s" selected>Small</option>
+                    <option value="m">Medium</option>
+                    <option value="l">Large</option>
+                    <option value="x">X-tra Large</option>
+                  </select>
+                </div>
+
+                <div class="config-field">
+                  <label for="epochs">Epochs</label>
+                  <input
+                    type="number"
+                    id="epochs"
+                    name="epochs"
+                    min="1"
+                    step="1"
+                    value="30"
+                    placeholder="Enter Epoch Count"
+                    required
+                  />
+                </div>
+
+                <div class="config-field advanced-config offscreen">
+                  <label for="batches">Batch Size</label>
+                  <input
+                    type="number"
+                    id="batches"
+                    name="batches"
+                    min="16"
+                    step="1"
+                    value="16"
+                    placeholder="Enter Batch Count"
+                    required
+                  />
+                </div>
+
+
+                <div class="config-field advanced-config offscreen">
+                  <label for="image_size">Image Size</label>
+                  <select id="image_size" name="image_size" required>
+                    <option value="640" selected>640 px</option>
+                    <option value="512">512 px</option>
+                    <option value="480">480 px</option>
+                    <option value="300">300 px</option>
+                    <option value="256">256 px</option>
+                    <option value="128">128 px</option>
+                  </select>
+                </div>
+
+                <div class="config-field advanced-config offscreen">
+                  <label for="data_split_ratio">Data Split Ratio</label>
+                  <select id="data_split_ratio" name="data_split_ratio" required>
+                    <option value="70-15-15">70 , 15 , 15</option>
+                    <option value="70-20-10" selected>70 , 20 , 10</option>
+                    <option value="80-10-10">80 , 10 , 10</option>
+                    <option value="60-20-20">60 , 20 , 20</option>
+                  </select>
+                </div>
+
+                <div class="config-field advanced-config offscreen">
+                  <label for="freeze-layers">Freeze Layers</label>
+                  <div class="toggle-row"> 
+                      <label class="toggle small">
+                        <input id="freeze-toggle" type="checkbox" >
+                        <span class="slider"></span>
+                      </label>
+                      <select id="freeze-layers" name="freeze-layers" disabled required>
+                        
+                        <option value="none" style ="font-weight:200 !important;" selected>None</option>
+                        <option value="auto" style ="font-weight:200 !important;" >Automatic</option>
+                        <option value="freeze-backbone" style ="font-weight:200 !important;">Freeze Backbone</option>
+                        <option value="freeze-most-layers" style ="font-weight:200 !important;">Freeze Most Layers</option>
+                      </select>
+                  </div>
+                </div>
+
+                <div class="config-field advanced-config offscreen">
+                  <label for="learning_rate">Learning Rate</label>
+                  <input
+                    type="number"
+                    id="learning_rate"
+                    name="learning_rate"
+                    min="0.001"
+                    step="0.01"
+                    value="0.01"
+                    max="1"
+                    placeholder="Enter Learning Rate"
+                    required
+                  />
+                </div>
+
+                <div class="config-field advanced-config offscreen">
+                  <label for="augmentation">Augmentation</label>
+                  <select id="augmentation" name="augmentation" required>
+                    <option value="low" selected>Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+
+              </div>
+
+
+              <br/>
+              <div class="step-actions">
+                <a class="btn btn-primary fullwidth offscree" style="margin-bottom: 25px;" onclick="sendConfigToGoogle()" href="#" target="_blank" rel="noopener noreferrer">
+                  Send Config to Google Drive
+                </a>
+                <div class="grid-3">
+                  <a class="btn btn-secondary fullwidth offscreen" onclick="loadConfig()" href="#" target="_blank" rel="noopener noreferrer">
+                    Load
+                  </a>
+                  <a class="btn btn-secondary fullwidth" onclick="openConfigModal()" href="#" target="_blank" rel="noopener noreferrer">
+                    Show
+                  </a>
+                  <a class="btn btn-secondary fullwidth" onclick="saveConfig()" href="#" target="_blank" rel="noopener noreferrer">
+                    Save
+                  </a>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+        <div class="step-item">
+                <div class="step-marker">
+                
+                <h2>3</h2>
+                <svg class="offscreen"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                </svg>
+                </div>
+                <div class="step-panel">
+                    <div class="step-topline">
+                        <span class="step-label">Step 3</span>
+                        <span class="step-status">Required</span>
+                    </div>
+                    <h3 class="step-title">Connect to Cloudflare - <span class="processing smaller">Optional </span></h3>
+                    <p class="step-text">
+                        Enabling Cloudflare allows Colab notebooks to access the model config file.
+                    </p>
+                    <br/>
+                    <div class="step-actions">
+                      <div class="three-grid">
+                        <!--
+                        <a class="btn btn-danger fullwidth" onclick="startTunnel()" href="#" target="_blank" rel="noopener noreferrer">
+                          Publish
+                        </a>
+                      -->
+                        <div class="toggle-row"> 
+                          <label class="toggle large">
+                            <input id="conn_toggle" type="checkbox" onclick="">
+                            <span class="slider in_process" id="conn_message">Disconnected &nbsp;</span>
+                          </label>
+                        </div>
+                        <div class="step-note " style="margin: 0px; ">
+                          <div style="position: relative;">
+                          <div id="loader-container" class="loader-container hidden">
+                            <div class="spinner"></div>
+                          </div>
+                          </div>
+                          <div class="copy-container offscreen" id="published_container" >
+                              <div id="published_URL">https://cosmetic-longer-mines-sie.trycloudflare.com</div>
+                              <button class="copy-btn" id="copyBtn">&#10697;</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+          </div>
+
+
+
+        <div class="step-item">
+                <div class="step-marker">
+                
+                <h2>4</h2>
+                <svg class="offscreen"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                </svg>
+                </div>
+                <div class="step-panel">
+                    <div class="step-topline">
+                        <span class="step-label">Step 4</span>
+                        <span class="step-status">Required</span>
+                    </div>
+                    <h3 class="step-title">Open in Google Colab</h3>
+                    <p class="step-text">
+                        Creates a personal copy of the Google Colab template in your own Google Account.   Use <strong>File → Save </strong> to store a blank copy in Drive before editing any cells.
+                        Connect your Notebook to a Runtime (eg T4) and execute each cell one at a time from top to bottom.  Alternatively,
+                        you can click Runtime → Run All. 
+                      </p>
+                    <br/>
+                    <div class="step-actions">
+                      <div class="grid-3">
+                        <a class="btn btn-secondary fullwidth" href="https://github.com/lawesworks/vision-model-workbench" target="_blank" rel="noopener noreferrer">
+                          Open Colab Notebook
+                        </a>
+                        <div> </div>
+                      </div>
+                    </div>
+                </div>
+          </div>
+        
+          <div class="step-item offscreen">
+            <div class="step-marker">
+              <h2>5</h2>
+              <svg class="offscreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 6h13"></path>
+                <path d="M8 12h13"></path>
+                <path d="M8 18h13"></path>
+                <path d="M3 6h.01"></path>
+                <path d="M3 12h.01"></path>
+                <path d="M3 18h.01"></path>
+              </svg>
+            </div>
+            <div class="step-panel">
+              <div class="step-topline">
+                <span class="step-label">Step 5</span>
+                <span class="step-status">Required</span>
+              </div>
+              <h3 class="step-title">Have Fun</h3>
+              <p class="step-text">
+                Leverage Google and Youtube to get familiar with Colab.   
+              </p>
+              <div class="step-note offscreen">
+                Running cells individually makes it easier to spot errors, missing packages, or authentication issues.
+              </div>
+                <div class="four-grid">
+                    <div class="step-actions offscreen">
+                        <img src=""/>
+                    </div>
+                  <div class="step-note offscreen">
+                    
+                  </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar offscreen">
+        <button class="btn btn-primary" type="button" onclick="location.href='/'">&#x25C0; &nbsp;Back to Home</button>
+      </div>
+    </div>
+
+    <script>
+
+        // Send Config to connected Google Drive
+        // ------------------------------------------------------------------
+        async function sendConfigToGoogle() {
+
+          event.preventDefault();
+
+          if (!validateForm()) {
+            message = "Please fill in all required fields.";
+            showFormAlert(message,1);
+
+            return;
+          }
+
+          const projectUrl = document.getElementById("project_url").value;
+          const datasetVersion = document.getElementById("dataset_version").value;
+
+          const url = `/drive/upload-config?project_url=${encodeURIComponent(projectUrl)}&dataset_version=${datasetVersion}`;
+
+
+
+          try {
+            const res = await fetch(url, { method: "POST" });
+            const text = await res.text();
+            const data = JSON.parse(text);
+
+            console.log("Result:", res.status);
+            console.log("body:", text);
+            
+            console.log("status ", data.status)
+            console.log("info: ", data.info)
+
+            if (!res.ok) {
+              throw new Error(text);
+            }
+
+            //console.log("Success");
+            error_state = (data.status !== "ok")
+            showFormAlert(data.info, error_state=error_state) 
+              
+
+          } catch (err) {
+            console.error("Request failed:", err);
+            showFormAlert(data.info, error_state=true) 
+          }
+        }
+
+
+        // Functions to Load and Unload Loader
+        // ------------------------------------------------------------------
+
+        function showLoader() {
+          document.getElementById("loader-container").classList.remove("hidden");
+        }
+
+        function hideLoader() {
+          document.getElementById("loader-container").classList.add("hidden");
+        }
+
+
+        // FUnction to Add Classes
+        // ------------------------------------------------------------------
+        function addClassToElements(targetClass, classToAdd) {
+          const elements = document.querySelectorAll(`.${targetClass}`);
+
+          elements.forEach(el => {
+            el.classList.add(classToAdd);
+          });
+        }
+
+        // FUnction to Remove Classes
+        // ------------------------------------------------------------------
+        function removeClassFromElements(targetClass, classToDelete) {
+          const elements = document.querySelectorAll(`.${targetClass}`);
+
+          elements.forEach(el => {
+            el.classList.add(classToDelete);
+          });
+        }
+
+        // Function to Toggle Classes
+        // ------------------------------------------------------------------
+        function toggleClassOnElements(targetClass, classToToggle) {
+          document.querySelectorAll(`.${targetClass}`).forEach(el => {
+            el.classList.toggle(classToToggle);
+            //alert(classToToggle + " " + targetClass);
+          });
+        }
+
+
+        // Wait for Cloudflare Connection Success and URL
+        // ------------------------------------------------------------------
+        async function waitForTunnelUrl() {
+          const conn_container = document.getElementById("published_container");
+
+          for (let i = 0; i < 10; i++) {
+            const response = await fetch("http://127.0.0.1:8000/tunnel/status");
+            const result = await response.json();
+
+            if (result.url) {
+              showFormAlert("Success: Cloudflare URL acquired");
+              console.log("Tunnel URL:", result.url);
+              urlnote = document.getElementById("published_URL");
+              urlnote.innerText = result.url;
+              conn_message.innerText = "Connected";
+              conn_message.classList.remove("in_process");
+              setTimeout(() => {
+                hideLoader();
+                conn_container.classList.remove("offscreen");
+              }, 1000);
+              
+              return result.url;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+
+          showFormAlert("Tunnel started, but URL was not ready yet", 1);
+          return null;
+        }
+
+
+        // Wait for Cloudflare Disconnection Stop
+        // ------------------------------------------------------------------
+        async function waitForTunnelStop() {
+          const conn_container = document.getElementById("published_container");
+          for (let i = 0; i < 10; i++) {
+            try {
+              const response = await fetch("http://127.0.0.1:8000/tunnel/status");
+              const result = await response.json();
+
+              console.log("Tunnel status:", result);
+
+              if (!result.running) {
+                showFormAlert("Cloudflare tunnel stopped");
+                conn_message.innerText = "Disconnected";
+                conn_container.classList.add("offscreen");
+                return true;
+              }
+
+              // wait 1 second before next check
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
+            } catch (err) {
+              console.error("Error checking tunnel status:", err);
+              showFormAlert("Error checking tunnel status", 1);
+              return false;
+            }
+          }
+        }
+
+
+        // Stop Tunnel to Cloudflare
+        // ------------------------------------------------------------------
+        async function stopTunnel() {
+          
+          try {
+
+            conn_message.innerText = "Disconnecting....";
+
+            const response = await fetch("http://127.0.0.1:8000/tunnel/stop", {
+              method: "POST"
+            });
+
+            if (!response.ok) {
+              showFormAlert("Failed to stop tunnel", 1);
+              return;
+            }
+
+            await waitForTunnelStop();
+
+            setTimeout(() => {
+              showFormAlert("Cloudflare Tunnel Stopped");
+            }, 3000);
+
+
+
+            
+
+          } catch (err) {
+            console.error(err);
+            showFormAlert("Failed to disconnect", 1);
+          }
+        }
+
+
+        // Start Tunnel to Cloudflare
+        // ------------------------------------------------------------------
+        async function startTunnel() {
+
+          //event.preventDefault();
+          
+          try {
+            const response = await fetch("http://127.0.0.1:8000/tunnel/start", {
+              method: "POST"
+            });
+
+            const result = await response.json();
+
+            console.log("Tunnel result:", result);
+            console.log("Status:", result.status);
+            console.log("URL:", result.url);
+
+            if (!response.ok) {
+              showFormAlert("Failed to start Cloudflare tunnel", 1);
+              return;
+            }
+            showLoader();
+            showFormAlert("Cloudflare tunnel starting");
+            conn_message.innerText = "Connecting.... Please Wait";
+            waitForTunnelUrl();
+          } catch (err) {
+            console.error(err);
+            showFormAlert("Failed to start Cloudflare", 1);
+          }
+
+
+        }
+
+
+      
+        // Save Config to File
+        // ------------------------------------------------------------------
+        async function saveConfig() {
+
+          event.preventDefault();
+
+          if (!validateForm()) {
+            message = "Please fill in all required fields.";
+            showFormAlert(message,1);
+
+            return;
+          }
+
+          const payload = {
+            project_url: document.getElementById("project_url").value,
+            dataset_version: parseInt(document.getElementById("dataset_version").value),
+            yolo_version: document.getElementById("yolo_version").value,
+            yolo_size: document.getElementById("yolo_size").value,
+            epochs: parseInt(document.getElementById("epochs").value),
+            batches: parseInt(document.getElementById("batches").value),
+            learning_rate: parseFloat(document.getElementById("learning_rate").value),
+            image_size: parseFloat(document.getElementById("image_size").value),
+            //roboflow_api_key: document.getElementById("roboflow_api_key").value
+          };
+
+          try {
+            const response = await fetch("http://127.0.0.1:8000/config/save", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(payload)
+            });
+ 
+            const result = await response.json();
+            console.log("Saved: ", result.message);
+            showFormAlert("Successfully saved config");
+
+          } catch (err) {
+            console.error(err);
+            showFormAlert("Failed to save config",1);
+          }
+        }
+
+        // Function to Validate Form
+        // ------------------------------------------------------------------
+        function validateForm() {
+          let isValid = true;
+
+          //const fields = document.querySelectorAll("[required]");
+
+          const fields = [
+            document.getElementById("project_url"),
+            document.getElementById("dataset_version"),
+            document.getElementById("yolo_version"),
+            document.getElementById("yolo_size"),
+            document.getElementById("epochs"),
+            document.getElementById("learning_rate"),
+            document.getElementById("batches"),
+            //document.getElementById("roboflow_api_key")
+          ];
+
+          fields.forEach(field => {
+            // Remove previous error state
+            field.classList.remove("input-error");
+
+            // Check empty
+            if (!field.value || field.value.trim() === "") {
+              field.classList.add("input-error");
+              isValid = false;
+            }
+          });
+
+          return isValid;
+        }
+
+
+
+
+        // FUnctions to Display the Config in a Modal (Close)
+        // ----------------------------------------------------------------------
+        
+        function closeConfigModal() {
+          document.getElementById("configModal").classList.add("hidden");
+        }
+
+        async function openConfigModal() {
+
+          event.preventDefault();
+
+          const modal = document.getElementById("configModal");
+          const body = document.getElementById("configModalBody");
+
+          modal.classList.remove("hidden");
+          body.innerHTML = `<div class="config-loading">Loading configuration...</div>`;
+
+          try {
+            const response = await fetch("/roboflow-config", {
+              method: "GET"
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+              body.innerHTML = `<div class="config-error">${result.detail || "Failed to load configuration."}</div>`;
+              return;
+            }
+
+            body.innerHTML = renderConfigGrid(result);
+
+          } catch (err) {
+            console.error("Config modal load failed:", err);
+            body.innerHTML = `<div class="config-error">Failed to load configuration.</div>`;
+          }
+        }
+
+        // FUnctions to Display the Config in a Modal (Render)
+        function renderConfigGrid(config) {
+          const entries = Object.entries(config);
+
+          if (!entries.length) {
+            return `<div class="config-empty">No configuration values found.</div>`;
+          }
+
+          const lines = entries.map(([key, value]) => {
+            let displayValue = value;
+
+            // Mask API keys
+            if (key.toLowerCase().includes("api_key")) {
+              const raw = String(value ?? "");
+              displayValue = "*".repeat(raw.length || 6);
+            }
+
+            // Quote strings, leave numbers as-is
+            if (typeof displayValue === "string") {
+              displayValue = `"${displayValue}"`;
+            }
+
+            return `${key} = ${displayValue}`;
+          });
+
+          return `<textarea id="configTextarea" class="config-textarea" readonly>${lines.join("\n")}</textarea>`.trim();
+
+        }
+
+        // FUnctions to Display the Config in a Modal (Clean)
+        function escapeHtml(str) {
+          return str
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+        }
+
+        // Function to copy the text to clipboard
+        async function copyConfigToClipboard(button) {
+          const textarea = document.getElementById("configTextarea");
+          const originalText = button.textContent;
+
+          try {
+            await navigator.clipboard.writeText(textarea.value);
+            button.textContent = "Copied ......";
+            //button.classList.add("processing");
+          } catch {
+            textarea.select();
+            document.execCommand("copy");
+            button.textContent = "Copied!";
+            
+          }
+
+          setTimeout(() => {
+            button.textContent = originalText;
+            //button.classList.remove("processing");
+          }, 2000);
+        }
+
+      document.addEventListener("DOMContentLoaded", () => {
+
+            // FUnctions to Display the Config in a Modal (Listners)
+            document.addEventListener("keydown", function (event) {
+              if (event.key === "Escape") {
+                closeConfigModal();
+              }
+            });
+
+            document.getElementById("configModal").addEventListener("click", function (event) {
+              if (event.target === this) {
+                closeConfigModal();
+              }
+            });
+
+            // auto-select on click to copy easily
+            document.addEventListener("click", function (e) {
+              if (e.target.classList.contains("config-textarea")) {
+                e.target.select();
+              }
+            });
+
+        })
+
+
+
+
+        // Function to Show Form Alerts
+        // ------------------------------------------------------------------
+        function showFormAlert(message, error_state=false) {
+          const alertBox = document.getElementById("form-alert");
+
+          alertBox.textContent = message;
+          alertBox.classList.remove("hidden");
+
+          // Force reflow so animation works
+          void alertBox.offsetWidth;
+
+          alertBox.classList.add("show");
+
+          if (error_state)
+            alertBox.classList.add("error");
+
+          // Hide after 3 seconds
+          setTimeout(() => {
+            alertBox.classList.remove("show");
+            alertBox.classList.remove("error");
+            setTimeout(() => {
+              alertBox.classList.add("hidden");
+            }, 400); // matches CSS transition
+          }, 3000);
+        }
+
+        // ------------------------------------------------------------------
+        // Document Listeners
+        // ------------------------------------------------------------------
+        document.addEventListener("DOMContentLoaded", () => {
+          const toggle = document.getElementById("freeze-toggle");
+          const select = document.getElementById("freeze-layers");
+
+          const conn_container = document.getElementById("published_container");
+          const conn_toggle    = document.getElementById("conn_toggle");
+          const conn_message   = document.getElementById("conn_message");
+          const config_message  = document.getElementById("config_message");
+          const config_toggle  = document.getElementById("config_toggle");
+
+          const learning = document.getElementById("learning_rate");
+
+          if (!toggle || !select) return;
+
+
+        // Search Roboflow
+        // ------------------------------------------------------------------
+        document.getElementById("dataset_search").addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            const query = encodeURIComponent(this.value);
+            //window.location.href = `https://universe.roboflow.com/search?q=${query}`;
+            window.open(`https://universe.roboflow.com/search?q=${query}`, "_blank");
+          }
+        });
+
+
+        // Learning Rate Auto-Entry Correction
+        // ------------------------------------------------------------------
+          learning.addEventListener("input", () => {
+            let val = parseFloat(learning.value);
+
+            if (val > 1) learning.value = 1;
+            if (val < 0.0) learning.value = 0.01;
+          });
+
+
+
+        // Input Error Reset
+        // ------------------------------------------------------------------
+        document.querySelectorAll("input, select").forEach(field => {
+          field.addEventListener("input", () => {
+            if (field.value.trim() !== "") {
+              field.classList.remove("input-error");
+            }
+          });
+        });
+
+        // Freeze Layers Toggle
+        // ------------------------------------------------------------------
+          toggle.addEventListener("change", function () {
+            const isChecked = !this.checked;
+
+            if (isChecked) {
+              select.value = "none";
+              console.log("Reset to none, then disabling...");
+            } else {
+              console.log("Enabling select...");
+            }
+
+            setTimeout(() => {
+              select.disabled = isChecked;
+            }, 100);
+          });
+
+ 
+          // Config Mode Toggle 
+          // ------------------------------------------------------------------
+          config_toggle.addEventListener("change", function () {
+            const isChecked = this.checked;
+        
+
+            if (isChecked) {
+              //conn_container.classList.remove("offscreen");
+              console.log("Advanced");
+              config_message.innerText = "Advanced";
+              //removeClassFromElements("advanced-config", "offscreen");
+              
+            } else {
+              //
+              console.log("Basic");
+              config_message.innerText = "Basic";
+              //addClassToElements("advanced-config", "offscreen");
+            }
+
+            toggleClassOnElements("advanced-config", "offscreen");
+
+          });
+
+          // Connector Toggle 
+          // ------------------------------------------------------------------
+          conn_toggle.addEventListener("change", function () {
+            const isChecked = this.checked;
+        
+
+            if (isChecked) {
+              //conn_container.classList.remove("offscreen");
+              console.log("Conecting Cloudflare...");
+              conn_message.innerText = "Connecting.... Please Wait";
+              startTunnel();
+            } else {
+              //
+              console.log("Disconnecting Cloudflare....");
+              conn_message.innerText = "Disconnecting.... Please Wait";
+              conn_message.classList.add("in_process");
+              stopTunnel();
+            }
+
+          });
+
+
+
+          // Copy Button 
+          // ------------------------------------------------------------------
+          document.getElementById("copyBtn").addEventListener("click", () => {
+            const text = document.getElementById("published_URL").innerText;
+
+            navigator.clipboard.writeText(text)
+              .then(() => {
+                console.log("Copied!");
+              })
+              .catch(err => {
+                console.error("Copy failed:", err);
+              });
+          });
+
+
+        });
+    </script>
+  </body>
+</html>

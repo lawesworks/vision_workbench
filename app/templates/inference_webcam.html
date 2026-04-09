@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>YOLO Inference</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center-container" >
+      <div class="container" >
+        <div class="card">
+            <div class="title-grid ">
+              <div>
+                <h1>Webcam Inference</h1>
+                <p class="small">Model: <span class="success">{{model_name}}</span></p>
+                <p>{{ message }}</p>
+              </div>
+              
+              <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+            </div>
+            
+            <br/><br/>
+
+            <div>
+              <div class="card one-grid">
+                
+                <div class="flex-height">
+                    <button class="btn-secondary" onclick="setStream('/stream/webcam?index=0', 'streamImg0')" style="border-radius: 10px; "> <span style="font-size:20px"> &#x1F5B2 </span></button>               
+                    <button class="btn-secondary " onclick="stopStream('streamImg0', 0)" style="border-radius: 10px; font-size: 25px; ">&#128683;</button>                  
+                </div>
+                <div >
+                    <h3  style=" margin-top:0px; text-align: center;" >Camera 0</h3>
+                    <div class="offscreen" style="margin: 0px;">
+                        
+                        <img id="streamImg0" style="width:100%; max-width: 1000px; border: 1px solid #ccc; border-radius: 0px;" />
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card one-grid">
+                <div class="flex-height">
+                        <button class="btn-secondary" onclick="setStream('/stream/webcam?index=1', 'streamImg1')", style="border-radius: 10px; "> <span style="font-size:20px;"> &#x1F5B2; </span></button>               
+          
+                        <button class="btn-secondary "  onclick="stopStream('streamImg1', 1)" style="border-radius: 10px; font-size: 25px; ">&#128683</button>
+                    
+                </div>
+                <div>
+                    <h3  style=" margin-top:0px; text-align: center;">Camera 1</h3>
+                    <div class="offscreen" style="margin: 0px;">
+                        
+                        <img id="streamImg1" style="width:100%; max-width: 1000px; border: 1px solid #ccc; border-radius: 0px;" />
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+<script>
+    function setStream(path, imgId) {
+        const img = document.getElementById(imgId);
+        const container = img.parentElement;
+
+        img.src = "";
+        img.removeAttribute("src");
+
+        container.classList.remove("offscreen");
+        img.src = path + (path.includes('?') ? '&' : '?') + 't=' + Date.now();
+    }
+
+    async function stopStream(imgId, index) {
+        const img = document.getElementById(imgId);
+        const container = img.parentElement;
+
+        img.src = "";
+        img.removeAttribute("src");
+        container.classList.add("offscreen");
+
+        try {
+            const response = await fetch(`/stop-webcam?index=${index}`, {
+                method: "POST"
+            });
+
+            console.log("stop-webcam status:", response.status);
+
+            const data = await response.json();
+            console.log("stop-webcam data:", data);
+        } catch (err) {
+            console.error("Failed to call /stop-webcam:", err);
+        }
+    }
+
+</script>
+  </body>
+</html>

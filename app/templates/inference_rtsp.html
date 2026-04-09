@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>YOLO Inference</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+  </head>
+  <body>
+    <div class="center-container" >
+      <div class="container" >
+        <div class="card">
+                    <div class="title-grid ">
+                      <div>
+                        <h1>RTSP Inference</h1>
+                        <p class="small">Model: <span class="success">{{model_name}}</span></p>
+                        <p>{{ message }}</p>
+                        <p class="small" id="status"></p>
+                      </div>
+                      
+                      <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+                    </div>
+                    
+                    <br/><br/>
+
+                    <div class="card" >      
+                                
+                      <h3>How to Publish an RTSP Stream ? &nbsp;&nbsp; <span id="toggleNotes" style="font-size: 25px; cursor: pointer;" class="danger" onclick="toggleNotes()" type="button">      &#x25BC;     </span> </h3>
+                      <div id="notes" class="padtop offscreen">
+                          <hr/> 
+                          <h4 class="small">RTSP Stream setup: Server Side</h4>
+                          <p class="small">Clear port: <br/><code>sudo fuser -k 8554/tcp</code></p>
+                          <p class="small">Start RTSP: <br/><code>/usr/local/bin/mediamtx /usr/local/etc/mediamtx.yml</code></p>
+                          <p class="small">Publish to RTSP (local machine)(file): <br/>
+                            <code>ffmpeg -re -stream_loop -1 -i input.mp4 -c copy -f rtsp rtsp://localhost:8554/live</code>
+                          </p>
+                          <p class="small">Publish to RTSP (file): <br/>
+                            <code>ffmpeg -re -stream_loop -1 -i input.mp4 -c copy -f rtsp rtsp://192.168.1.160:8554/live</code>
+                          </p>
+                          <p class="small">Publish to RTSP (webcam): <br/>
+                            <code>ffmpeg -re -f v4l2 -i /dev/video0 -c:v libx264 -preset veryfast -tune zerolatency -f rtsp rtsp://192.168.1.160:8554/live</code>
+                          </p>
+                          <br/>
+                          <h4 class="small">RTSP Inference: Client / Inference Side</h4>
+                          <p class="small">Consume RTSP feed <br/><code>http://127.0.0.1:8000/stream/rtsp?url=rtsp://192.168.1.160:8554/live</code></p>
+                    </div>
+                    </div>
+                    <hr style="margin: 50px 0px;"/>
+                    <div class="card">   
+
+                      <div class="input-grid">
+                        
+
+
+                            <input
+                                type="text"
+                                id="rtspUrl"
+                                name="rtspUrl"
+                                placeholder="rtsp://192.168.1.160:8554/live"
+                  
+                                value="rtsp://192.168.1.160:8554/live"
+                      
+                            />
+            
+                        
+                            <button  id="startStreamBtn">Start Stream</button>
+                      </div>
+                      <br/>
+
+
+
+                      
+
+
+
+                      <div class="input-grid">
+                            <div class="" style="padding: 0px !important;  font-size: 15px; display:grid; grid-template-columns: repeat(8, 1fr); gap:10px; margin:2px; padding: 11px;">
+                                <label style="margin: auto; margin-left: 0px;;">Confidence</label>
+                                <input class="grid-item" type="number" id="conf" value="0.25" step="0.05" min="0" max="1" style="width:75px;"/>
+                                <label style="margin: auto; margin-left: 0px;;">Frames / sec</label>
+                                <input class="grid-item" type="number" id="maxFps" value="15" step="1" min="1" style="width: 75px;"/>
+                            </div>
+                        <button id="stopStreamBtn" type="button">Stop Stream</button>
+                        <br/>
+                        <button id="startStreamWindow" onclick="window.open('http://127.0.0.1:8000/stream/rtsp?url=rtsp://192.168.1.160:8554/live', '_blank');" type="button">Standalone</button>
+                      </div>
+                      </div>
+
+                      
+      
+                      <img
+                          id="rtspStream"
+                          alt="RTSP inference stream"
+                          style="width:100%; max-width: 750px; border: 1px solid #ccc; display: none;"
+                      />
+                    </div>
+
+
+        </div>
+      </div>
+    </div>
+
+        <script>
+              const startBtn = document.getElementById("startStreamBtn");
+              const stopBtn = document.getElementById("stopStreamBtn");
+              const rtspInput = document.getElementById("rtspUrl");
+              const statusDiv = document.getElementById("status");
+              const streamImg = document.getElementById("rtspStream");
+              var streamStoppedByUser = false;
+
+              startBtn.addEventListener("click", () => {
+                  const rtspUrl = rtspInput.value.trim();
+
+                  if (!rtspUrl) {
+                      statusDiv.textContent = "Please enter an RTSP URL.";
+                      return;
+                  }
+
+                  statusDiv.textContent = "Connecting to RTSP stream...";
+                  statusDiv.classList.remove("success","danger", "stopped");
+                  statusDiv.classList.add("processing");
+
+                  // Stop any previous stream first
+                  streamImg.src = "";
+                  streamImg.style.display = "none";
+
+                  //const streamUrl = `/stream/rtsp?url=${encodeURIComponent(rtspUrl)}`;
+                  const conf = document.getElementById("conf").value;
+                  const maxFps = document.getElementById("maxFps").value;
+
+                  const streamUrl =
+                      `/stream/rtsp?url=${encodeURIComponent(rtspUrl)}&conf=${encodeURIComponent(conf)}&max_fps=${encodeURIComponent(maxFps)}`;
+
+                  streamImg.onload = () => {
+                      statusDiv.textContent = "Streaming...";
+                      statusDiv.classList.remove("processing","danger","stopped");
+                      statusDiv.classList.add("success");
+                      //streamImg.style.display = "block";
+                  };
+
+                  streamImg.onerror = () => {
+                      statusDiv.textContent = "Failed to load RTSP stream.  It could be offline";
+                      statusDiv.classList.remove("success","processing", "stopped");
+                      statusDiv.classList.add("danger");
+                      streamImg.style.display = "none";
+                  };
+
+                  streamImg.src = streamUrl;
+                  streamImg.style.display = "block";
+              });
+
+              stopBtn.addEventListener("click", () => {
+                  streamStoppedByUser = true;
+                  streamImg.onerror = null;
+                  streamImg.onload = null;
+                  streamImg.src = "";
+                  streamImg.style.display = "none";
+                  statusDiv.textContent = "Stream stopped.";
+                  statusDiv.classList.remove("success","danger", "success");
+                  statusDiv.classList.add("stopped");
+              });
+              function toggleNotes() {
+                  const elem = document.getElementById("notes");
+                  const trig = document.getElementById("toggleNotes");
+                
+                  if (elem.classList.contains("offscreen")){
+                    trig.innerHTML  = "&#9650;";
+                    trig.classList.remove("danger");
+                    trig.classList.add("processing");
+                  } else {
+                    trig.innerHTML = "&#x25BC;";
+                    trig.classList.add("danger");
+                    trig.classList.remove("processing");
+                  }
+                  // Toggle Visibility of container
+                  elem.classList.toggle("offscreen");
+
+                  
+              }
+        </script>
+  </body>
+</html>

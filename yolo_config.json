@@ -1,0 +1,10 @@
+{
+  "Roboflow_Project_URL": "ffff",
+  "Roboflow_Dataset_Version": 5,
+  "YOLO_Version": "yolov8",
+  "YOLO_Size": "s",
+  "Epochs": 30,
+  "Batches": 16,
+  "Learning_Rate": 0.01,
+  "Image_Size": 640
+}

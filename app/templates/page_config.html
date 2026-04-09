@@ -1,0 +1,553 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Configuration</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <style>
+      .instructions-tip {
+        margin-top: 24px;
+      }
+
+      .instructions-tip p{
+        background: linear-gradient(180deg, var(--danger) 0%, var(--danger-hover) 100%);
+        padding: 20px 30px;
+        border-radius: 10px;
+      }
+
+      .file-upload {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      #fileNameDisplay {
+        font-size: 0.9rem;
+        color: #cbd5f5;
+      }
+
+      /* Optional: match your theme */
+      .file-upload .btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+      }
+
+      hr {
+        margin: 50px 0px !important;
+      }
+
+      .model-match {
+        color: var(--success); /* nice green */
+      }
+
+
+
+    </style>
+    
+  </head>
+  <body>
+
+
+    <div id="form-alert" class="form-alert hidden"></div>
+
+    <div class="container">
+        <div class="card title-grid ">
+        <div>
+            <h1>{{page_title}} <br/><span class="page-subtitle">{{page_subtitle}}</span></h1>
+            <p class="small">Active Model: <span id="current_model" class="success">{{current_model }}</span></p>
+            <p>{{ message }}</p>
+        </div>
+        
+        <div class="title-logo" ><p onclick="window.location.href='/'">&#171;</p></div>
+        </div>
+
+      <p class="page-subtitle offscreen">
+        Manage the active model and I've also put placeholder runtime settings for future expansion. (TBD)
+      </p>
+
+      <hr class="offscreen"/>
+      <div class="offscreen card instructions-tip one-grid" style="padding: 0px 10px;">
+        <div class="" ><p>ALERT</p></div>
+        <div class="" style="margin-top: auto; margin-bottom: auto; padding-left: 20px;">I'll send alerts and notifications here - (TBD)</div>
+      </div>
+      <hr class="offscreen"/>
+
+      <div class="card offscreen">
+        <h2 class="card-title">Notifications</h2>
+        <div class="status" id="notifications"></div>
+      </div>
+
+      {% if message %}
+        <div class="status">
+          {{ message }}
+        </div>
+      {% endif %}
+
+      {% if load_error %}
+        <div class="status danger">
+          <strong>Model load error:</strong> {{ load_error }}
+        </div>
+      {% endif %}
+
+      <div class="card-grid">
+        <!-- LEFT COLUMN -->
+        <div class="card">
+          <h2 class="card-title">Model Options
+              <span class="help-text offscreen">
+                &nbsp; Select a YOLO .pt file below
+              </span>
+          </h2>
+          <br/>
+          <form method="post" action="/select-model">
+            
+            <div class="field">
+              <label for="model_name" class="offscree">Set Active Model</label>
+              <div class="three-grid-reverse">
+                <select id="model_name" name="model_name">
+                  {% for m in models %}
+                    <option value="{{ m }}" {% if m == current_model ~ '.pt' %}selected{% endif %}>
+                      {{ m.rsplit('.', 1)[0] }}
+                    </option>
+                  {% endfor %}
+                </select>
+              
+                <button class="btn btn-secondary" type="submit">Load</button>
+                <!--<button class="btn btn-danger-dark"  type="button" onclick="deleteSelectedModel()">Delete</button>-->
+
+              </div>
+      
+            </div>
+          </form>
+         <br/>
+
+          <div class="field">
+            <label for="model_name" class="offscree">Remove a Model</label>
+            <div class="three-grid-reverse">
+
+              <input
+                type="text"
+                id="remove_model_target"
+                name="remove_model_target"
+                readonly
+                class="muted"
+              >
+              <button class="btn btn-danger-dark"  type="button" onclick="deleteSelectedModel()">Delete</button>
+
+            </div>
+    
+          </div>
+
+          <br/>
+          <div class="field">
+            <label for="model_name" class="offscree">Upload New Model</label>
+            <div class="three-grid-reverse">
+              <div class="file-upload">
+                
+                <input type="file" id="modelUpload" accept=".pt" hidden />
+
+                <button type="button" class="btn btn-secondary" onclick="triggerFileSelect()">
+                  Choose File
+                </button>
+
+                <span id="fileNameDisplay" style="font-weight: 200;">No file selected</span>
+              </div>
+
+              <button id="uploadModelBtn" class="btn btn-secondary"  onclick="uploadModelFile()">Upload</button>
+              <!--<button class="btn btn-secondary" type="button" onclick="clearModelUpload()">Cancel</button>-->
+            </div>
+          </div>
+          <br/>
+
+          <hr>
+
+          <h2 class="card-title">Inference Settings</h2>
+
+          <form method="post" action="/save-settings">
+            <div class="field">
+              <label for="conf_threshold">Confidence Threshold</label>
+              <input
+                type="number"
+                id="conf_threshold"
+                name="conf_threshold"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.25"
+              >
+              <div class="help-text">
+                Minimum confidence score required before a detection is shown.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="iou_threshold">IOU Threshold</label>
+              <input
+                type="number"
+                id="iou_threshold"
+                name="iou_threshold"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.45"
+              >
+            </div>
+
+            <div class="field">
+              <label for="max_det">Maximum Detections</label>
+              <input
+                type="number"
+                id="max_det"
+                name="max_det"
+                min="1"
+                step="1"
+                value="100"
+              >
+            </div>
+
+            <div class="field">
+              <label for="imgsz">Inference Image Size</label>
+              <input
+                type="number"
+                id="imgsz"
+                name="imgsz"
+                min="320"
+                step="32"
+                value="640"
+              >
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-secondary" type="submit">Save Inference Settings</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="card">
+          <h2 class="card-title">Video / Stream Settings</h2>
+
+          <form method="post" action="/save-settings">
+            <div class="field">
+              <label for="max_fps">Max FPS</label>
+              <input
+                type="number"
+                id="max_fps"
+                name="max_fps"
+                min="1"
+                step="1"
+                value="15"
+              >
+            </div>
+
+            <div class="field">
+              <label for="frame_skip">Frame Skip</label>
+              <input
+                type="number"
+                id="frame_skip"
+                name="frame_skip"
+                min="0"
+                step="1"
+                value="0"
+              >
+              <div class="help-text">
+                Use frame skipping to reduce processing load on slower devices.
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="stream_buffer">Stream Buffer Size</label>
+              <input
+                type="number"
+                id="stream_buffer"
+                name="stream_buffer"
+                min="1"
+                step="1"
+                value="4"
+              >
+            </div>
+
+            <div class="field">
+              <label for="source_timeout">Source Timeout (seconds)</label>
+              <input
+                type="number"
+                id="source_timeout"
+                name="source_timeout"
+                min="1"
+                step="1"
+                value="10"
+              >
+            </div>
+
+            <hr>
+
+            <h2 class="card-title">Output Settings</h2>
+
+            <div class="field">
+              <label for="output_format">Output Format</label>
+              <select id="output_format" name="output_format">
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="mp4">MP4</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="device">Device</label>
+              <select id="device" name="device">
+                <option value="auto">Auto</option>
+                <option value="cpu">CPU</option>
+                <option value="mps">Apple Silicon (MPS)</option>
+                <option value="cuda">NVIDIA CUDA</option>
+              </select>
+            </div>
+
+            <div class="grid">
+              <label class="badge">
+                <input type="checkbox" name="save_annotated" checked style="width:auto; margin-right:8px;">
+                Save annotated output
+              </label>
+
+              <label class="badge">
+                <input type="checkbox" name="show_labels" checked style="width:auto; margin-right:8px;">
+                Show labels
+              </label>
+
+              <label class="badge">
+                <input type="checkbox" name="show_confidence" checked style="width:auto; margin-right:8px;">
+                Show confidence
+              </label>
+
+              <label class="badge">
+                <input type="checkbox" name="save_metadata" style="width:auto; margin-right:8px;">
+                Save metadata
+              </label>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-secondary" type="submit">Save Runtime Settings</button>
+            </div>
+          </form>
+
+          <hr>
+        </div>
+      </div>
+
+
+
+      <div class="toolbar offscreen">
+        <button class="btn btn-primary" onclick="location.href='/'" type="button">Back to Home</button>
+      </div>
+
+    </div>
+<script>
+  const modelUploadInput = document.getElementById("modelUpload");
+  const modelUploadStatus = document.getElementById("modelUploadStatus");
+  const uploadModelBtn = document.getElementById("uploadModelBtn");
+
+
+
+// Document Listeners
+document.addEventListener("DOMContentLoaded", function () {
+  const select = document.getElementById("model_name");
+  activemodel = document.getElementById("current_model").textContent.trim();
+  selectedModeName = stripPt(select.value).trim();
+
+  if (selectedModeName === activemodel) {
+    select.classList.add("model-match");
+  }
+
+
+});
+
+
+  // Copy selected model name into this field
+  document.getElementById("model_name").addEventListener("change", function () {
+    const selectedValue = this.value;
+    selectedModeName = stripPt(this.value)
+    activemodel = document.getElementById("current_model").textContent.trim();
+    document.getElementById("remove_model_target").value = selectedModeName.trim();
+    
+    console.log("Selected model:", selectedModeName);
+    console.log("Active model:", activemodel);
+
+    if (selectedModeName === activemodel) {
+      this.classList.add("model-match");
+      console.log('=');
+    } else {
+      this.classList.remove("model-match");
+      console.log('=xxx');
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+  modelUploadInput.addEventListener("change", function () {
+    if (this.files && this.files.length > 0) {
+      modelUploadStatus.textContent = `Selected: ${this.files[0].name}`;
+    } else {
+      modelUploadStatus.textContent = "No file selected.";
+    }
+  });
+
+
+  function stripPt(name) {
+    return name.replace(/\.pt$/i, "");
+  }
+
+
+    // Function to Show Form Alerts
+  // ------------------------------------------------------------------
+  function showFormAlert(message, error_state=false) {
+    const alertBox = document.getElementById("form-alert");
+
+    alertBox.textContent = message;
+    alertBox.classList.remove("hidden");
+
+    // Force reflow so animation works
+    void alertBox.offsetWidth;
+
+    alertBox.classList.add("show");
+
+    if (error_state)
+      alertBox.classList.add("error");
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+      alertBox.classList.remove("show");
+      alertBox.classList.remove("error");
+      setTimeout(() => {
+        alertBox.classList.add("hidden");
+      }, 400); // matches CSS transition
+    }, 3000);
+  }
+
+  // Trigger File Select (make it prettier)
+  function triggerFileSelect() {
+    document.getElementById("modelUpload").click();
+  }
+
+  // Display information when during upload process
+  document.getElementById("modelUpload").addEventListener("change", function () {
+    const fileName = this.files.length ? this.files[0].name : "No file selected";
+    document.getElementById("fileNameDisplay").textContent = fileName;
+  });
+
+   // Function to Upload New Model
+  // ------------------------------------------------------------------
+  async function uploadModelFile() {
+    const file = modelUploadInput.files[0];
+    const notice = document.getElementById("notifications");
+
+    if (!file) {
+      showFormAlert("Please select a .pt file first.", 1);
+      fileNameDisplay.textContent = "No file selected.";
+      return;
+    }
+
+    if (!file.name.toLowerCase().endsWith(".pt")) {
+      showFormAlert("Only .pt files are allowed.", 1);
+      fileNameDisplay.textContent = "Invalid file type selected.";
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    uploadModelBtn.disabled = true;
+    uploadModelBtn.textContent = "Uploading...";
+    fileNameDisplay.textContent = `Uploading: ${file.name}`;
+
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/models/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = result.detail || "Upload failed.";
+        showFormAlert(errorMessage, 1);
+        fileNameDisplay.textContent = `Upload failed: ${file.name}`;
+        return;
+      }
+
+      const savedName = result.saved_filename || file.name;
+
+      showFormAlert(`Model uploaded successfully: ${savedName}`);
+      fileNameDisplay.textContent = `Uploaded: ${savedName}`;
+
+      modelUploadInput.value = "";
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+
+    } catch (err) {
+      console.error("Model upload error:", err);
+      showFormAlert("Upload failed.", 1);
+      fileNameDisplay.textContent = "Upload failed due to a network or server error.";
+    } finally {
+      uploadModelBtn.disabled = false;
+      uploadModelBtn.textContent = "Upload Model";
+    }
+
+    notice.innerText = fileNameDisplay.textContent;
+  }
+
+
+
+ // Function to delete Model
+  // ------------------------------------------------------------------
+  async function deleteSelectedModel() {
+  const select = document.getElementById("model_name");
+  const selected = select.value;
+  const notice = document.getElementById("notifications");
+
+  if (!selected) {
+    showFormAlert("No model selected.", 1);
+    return;
+  }
+
+  const confirmDelete = confirm(`Delete model "${selected}"?`);
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(`/models/delete/${encodeURIComponent(selected)}`, {
+      method: "DELETE"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      showFormAlert(result.detail || "Delete failed.", 1);
+      return;
+    }
+
+    showFormAlert(`Deleted: ${result.filename}`);
+    notice.innerText = `Deleted: ${result.filename}`;
+
+    // Refresh page to update dropdown
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+
+  } catch (err) {
+    console.error(err);
+    showFormAlert("Delete failed.", 1);
+  }
+}
+</script>
+  </body>
+</html>
