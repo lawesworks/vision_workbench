@@ -48,5 +48,5 @@ ffmpeg -version
 ```
 
 ## OpenCV
-#### The app uses opencv-python, which is installed via pip.
-#### However, video/stream functionality depends on system codecs (provided by FFmpeg).
+The app uses opencv-python, which is installed via pip.
+However, video/stream functionality depends on system codecs (provided by FFmpeg).
