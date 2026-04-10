@@ -1,8 +1,3 @@
-python -m venv .venv
-source .venv/bin/activate   # mac/linux
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-
 # Vision Workbench
 
 ## Requirements
@@ -50,3 +45,9 @@ ffmpeg -version
 ## OpenCV
 The app uses opencv-python, which is installed via pip.
 However, video/stream functionality depends on system codecs (provided by FFmpeg).
+
+# Start up
+python -m venv .venv
+source .venv/bin/activate   # mac/linux
+pip install -r requirements.txt
+uvicorn app.main:app --reload
