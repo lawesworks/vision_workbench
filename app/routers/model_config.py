@@ -91,6 +91,7 @@ def upload_config(project_url: str = None, dataset_version: int = None):
 
 
     data = {
+        "Project_Title": project_url,
         "Roboflow_Project_URL": project_url,
         "Roboflow_Dataset_Version": dataset_version
     }
@@ -157,6 +158,7 @@ def upload_config(project_url: str = None, dataset_version: int = None):
 
 
 class TrainConfig(BaseModel):
+    project_title: str
     project_url: str
     dataset_version: int
     yolo_version: str
@@ -171,6 +173,7 @@ class TrainConfig(BaseModel):
 @router.post("/config/save")
 def save_config(config: TrainConfig):
     data = {
+        "Project_Title": config.project_title,
         "Roboflow_Project_URL": config.project_url,
         "Roboflow_Dataset_Version": config.dataset_version,
         "YOLO_Version": config.yolo_version,
@@ -190,6 +193,7 @@ def save_config(config: TrainConfig):
 
 
 class RoboflowConfigResponse(BaseModel):
+    Project_Title: str
     Roboflow_Project_URL: str
     Roboflow_Dataset_Version: int
     YOLO_Version: str
@@ -215,6 +219,7 @@ def get_roboflow_config():
             cfg = json.load(f)
 
         return {
+            "Project_Title": cfg["Project_Title"],
             "Roboflow_Project_URL": cfg["Roboflow_Project_URL"],
             "Roboflow_Dataset_Version": cfg["Roboflow_Dataset_Version"],
             "YOLO_Version": cfg["YOLO_Version"],

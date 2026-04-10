@@ -545,7 +545,7 @@
 }
 
 .toggle.small .slider {
-  border-radius: 10px !important;
+  border-radius: 5px !important;
 }
 
 .toggle.medium {
@@ -553,8 +553,8 @@
   height: 40px;
 }
 
-.toggle.small .slider {
-  border-radius: 15px !important;
+.toggle.medium .slider {
+  border-radius: 10px !important;
 }
 
 .toggle.large {
@@ -562,7 +562,7 @@
   height: 50px;
 }
 
-.toggle.small .slider {
+.toggle.large .slider {
   border-radius: 15px !important;
 }
 
@@ -1081,24 +1081,71 @@
                 <span class="step-label">Step 1</span>
                 <span class="step-status">Required</span>
               </div>
-              <h3 class="step-title">Roboflow Dataset</h3>
+              <h3 class="step-title">Dataset</h3>
               <p class="step-text">
-                Find a dataset from Roboflow Universe that is relevant to your customer's use case.  Navigate to the page and copy the URL.  
+                Find a dataset in Roboflow Universe that is relevant to your customer's use case.  Navigate to the page and copy the URL.  
               </p>
 
-          
+              <br/>
+
+              <div style="display: grid;grid-template-columns: 2fr 1fr 1fr 1fr; gap:16px">
+                  <div class="config-field config-field" style="margin-bottom: 20px;">
+
+                      <label for="dataset_search">Dataset Search</label>
+                      <input
+                        type="text"
+                        id="dataset_search"
+                        name="dataset_search"
+                        placeholder="Keyword search for datasets"
+                      />
+
+                  </div>   
+
+                  <div class="config-field">
+                    <label for="yolo_version">Method</label>
+                    <select id="project_type" name="project_type" required>
+                      <option value="" selected>Any Type</option>
+                      <option value=" object detection" >Object Detection</option>
+                      <option value=" classification">Classification</option>
+                      <option value=" semantic segmentation" >Semantic Segmentation</option>
+                      <option value=" instance segmentation">Instance Segmentation</option>
+                      <option value=" keypoint detection" >Keypoint Detection</option>
+                      <option value=" multimodal" >Multimodal</option>
+                    </select>
+                  </div>
+                  <div class="config-field">
+                    <label for="project_model_version">Architecture</label>
+                    <select id="project_model_version" name="project_model_version" required>
+                      <option value="" selected>Any</option>
+                      <option value=" model:yolov5" >YOLOv5</option>
+                      <option value=" model:yolov8" >YOLOv8</option>
+                      <option value=" model:yolov9">YOLOv9</option>
+                      <option value=" model:yolov10">YOLOv10</option>
+                      <option value=" model:yolov11" >YOLOv11</option>
+                      <option value=" model:yolov12" >YOLOv12</option>
+                      <option value=" model:yolov26" >YOLOv26</option>
+                      <option value=" model:rfdetr" >RF-DETR</option>
+                      <option value=" model:snap" >Snap</option>
+                    </select>
+                  </div>
+                  <div class="config-field">
+                    <label for="min_image_count">Min. Images</label>
+                    <input
+                      type="number"
+                      id="min_image_count"
+                      name="min_image_count"
+                      min="100"
+                      step="100"
+                      placeholder="100"
+                      value="1300"
+                      required
+                    />
+                  </div>
+              </div>
+              
               <div class="three-grid-reverse">
                 
-                <div class="config-field config-field-full" style="margin-bottom: 20px;">
-                  <label for="dataset_search">Dataset Search</label>
-                  <input
-                    type="text"
-                    id="dataset_search"
-                    name="dataset_search"
-                    placeholder="Keyword search for datasets"
-                  />
-                  <!--<small>Optional helper field for your own search workflow.</small>-->
-                </div>          
+       
                 
 
 
@@ -1108,7 +1155,7 @@
                     type="text"
                     id="project_url"
                     name="project_url"
-                    placeholder="https://universe.roboflow.com/workspace-name/project-name"
+                    placeholder="Enter the URL to the Roboflow project"
                     required
                   />
                 </div>
@@ -1122,23 +1169,14 @@
                     min="1"
                     step="1"
                     placeholder="1"
+                    value="1"
                     required
                   />
                 </div>
-
-                <div class="config-field offscreen">
-                  <label for="project_url">Roboflow API Key (Optiona)</label>
-                  <input
-                    type="text"
-                    id="roboflow_api_key"
-                    name="roboflow_api_key"
-                    placeholder="12345678901234567890"
-                    required
-                  />
-                </div>
-
 
               </div>
+
+
             
               <br/>
               <div class="step-actions offscreen">
@@ -1161,21 +1199,61 @@
             <div class="step-panel">
               <div class="step-topline">
                 <span class="step-label">Step 2</span>
-                    <div class="toggle-row" style="margin-top: 0;"> 
-                      <label class="toggle small" style="width: 160px; margin-top: -5px;">
-                        <input id="config_toggle" type="checkbox" >
-                        <span id="config_message" class="slider">Basic</span>
-                      </label>
-                  </div>
+
                 <span class="step-status">Required</span>
               </div>
-              <h3 class="step-title">Model Config</h3>
+              <h3 class="step-title">Model Training</h3>
 
-              
 
               <p class="step-text">
-                Set hyperparamters and other configure other settings used during training
+                Configure hyperparamters, runtime parameters, and preferences for model training
               </p>
+
+
+
+
+
+
+  
+              <div class="grid-3" style="margin-top: 30px;">
+
+
+                <div class="config-field" >
+                  <label for="project_title">Your Project Name</label>
+                  <input
+                    type="text"
+                    id="project_title"
+                    name="project_title"
+                    min="1"
+                    step="1"
+                    placeholder="Give your new custom model a unique title or name"
+                    required
+                  />
+                </div>
+
+                <div class="config-field ">
+                  <label for="project_tags">Tags <span class="processing">( comma separated )</span></label>
+                  <input
+                    type="text"
+                    id="project_tags"
+                    name="project_tags"
+                    placeholder="object detect, cars, people"
+                    required
+                  />
+                </div>
+
+
+
+              </div>
+
+              <br/><br/>
+
+              <div class="toggle-row" style="margin-top: 30px;"> 
+                <label class="toggle small" style="width: 160px; margin-top: -5px;">
+                  <input id="config_toggle" type="checkbox" >
+                  <span id="config_message" class="slider">Basic</span>
+                </label>
+              </div>
 
          
               <div class="train-config-grid">
@@ -1255,7 +1333,7 @@
                 <div class="config-field advanced-config offscreen">
                   <label for="freeze-layers">Freeze Layers</label>
                   <div class="toggle-row"> 
-                      <label class="toggle small">
+                      <label class="toggle small" style="width: 100px;">
                         <input id="freeze-toggle" type="checkbox" >
                         <span class="slider"></span>
                       </label>
@@ -1298,28 +1376,27 @@
 
               <br/>
               <div class="step-actions">
-                <a class="btn btn-primary fullwidth offscree" style="margin-bottom: 25px;" onclick="sendConfigToGoogle()" href="#" target="_blank" rel="noopener noreferrer">
+                <a class="btn btn-primary fullwidth offscreen" style="margin-bottom: 25px;" onclick="sendConfigToGoogle()" href="#" target="_blank" rel="noopener noreferrer">
                   Send Config to Google Drive
                 </a>
                 <div class="grid-3">
                   <a class="btn btn-secondary fullwidth offscreen" onclick="loadConfig()" href="#" target="_blank" rel="noopener noreferrer">
                     Load
                   </a>
-                  <a class="btn btn-secondary fullwidth" onclick="openConfigModal()" href="#" target="_blank" rel="noopener noreferrer">
-                    Show
-                  </a>
                   <a class="btn btn-secondary fullwidth" onclick="saveConfig()" href="#" target="_blank" rel="noopener noreferrer">
                     Save
                   </a>
+                  <a class="btn btn-secondary fullwidth" onclick="openConfigModal()" href="#" target="_blank" rel="noopener noreferrer">
+                    Show
+                  </a>
+
 
                 </div>
               </div>
             </div>
           </div>
 
-
-
-        <div class="step-item">
+        <div class="step-item" >
                 <div class="step-marker">
                 
                 <h2>3</h2>
@@ -1332,56 +1409,7 @@
                         <span class="step-label">Step 3</span>
                         <span class="step-status">Required</span>
                     </div>
-                    <h3 class="step-title">Connect to Cloudflare - <span class="processing smaller">Optional </span></h3>
-                    <p class="step-text">
-                        Enabling Cloudflare allows Colab notebooks to access the model config file.
-                    </p>
-                    <br/>
-                    <div class="step-actions">
-                      <div class="three-grid">
-                        <!--
-                        <a class="btn btn-danger fullwidth" onclick="startTunnel()" href="#" target="_blank" rel="noopener noreferrer">
-                          Publish
-                        </a>
-                      -->
-                        <div class="toggle-row"> 
-                          <label class="toggle large">
-                            <input id="conn_toggle" type="checkbox" onclick="">
-                            <span class="slider in_process" id="conn_message">Disconnected &nbsp;</span>
-                          </label>
-                        </div>
-                        <div class="step-note " style="margin: 0px; ">
-                          <div style="position: relative;">
-                          <div id="loader-container" class="loader-container hidden">
-                            <div class="spinner"></div>
-                          </div>
-                          </div>
-                          <div class="copy-container offscreen" id="published_container" >
-                              <div id="published_URL">https://cosmetic-longer-mines-sie.trycloudflare.com</div>
-                              <button class="copy-btn" id="copyBtn">&#10697;</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-          </div>
-
-
-
-        <div class="step-item">
-                <div class="step-marker">
-                
-                <h2>4</h2>
-                <svg class="offscreen"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
-                </svg>
-                </div>
-                <div class="step-panel">
-                    <div class="step-topline">
-                        <span class="step-label">Step 4</span>
-                        <span class="step-status">Required</span>
-                    </div>
-                    <h3 class="step-title">Open in Google Colab</h3>
+                    <h3 class="step-title">Notebook</h3>
                     <p class="step-text">
                         Creates a personal copy of the Google Colab template in your own Google Account.   Use <strong>File → Save </strong> to store a blank copy in Drive before editing any cells.
                         Connect your Notebook to a Runtime (eg T4) and execute each cell one at a time from top to bottom.  Alternatively,
@@ -1390,7 +1418,7 @@
                     <br/>
                     <div class="step-actions">
                       <div class="grid-3">
-                        <a class="btn btn-secondary fullwidth" href="https://github.com/lawesworks/vision-model-workbench" target="_blank" rel="noopener noreferrer">
+                        <a class="btn btn-secondary fullwidth" href="https://colab.research.google.com/github/lawesworks/vision_workbench/blob/main/notebooks/YOLO_OD_Trainer_Turnkey_CE.ipynb" target="_blank" rel="noopener noreferrer">
                           Open Colab Notebook
                         </a>
                         <div> </div>
@@ -1398,43 +1426,51 @@
                     </div>
                 </div>
           </div>
-        
-          <div class="step-item offscreen">
-            <div class="step-marker">
-              <h2>5</h2>
-              <svg class="offscreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M8 6h13"></path>
-                <path d="M8 12h13"></path>
-                <path d="M8 18h13"></path>
-                <path d="M3 6h.01"></path>
-                <path d="M3 12h.01"></path>
-                <path d="M3 18h.01"></path>
-              </svg>
-            </div>
-            <div class="step-panel">
-              <div class="step-topline">
-                <span class="step-label">Step 5</span>
-                <span class="step-status">Required</span>
-              </div>
-              <h3 class="step-title">Have Fun</h3>
-              <p class="step-text">
-                Leverage Google and Youtube to get familiar with Colab.   
-              </p>
-              <div class="step-note offscreen">
-                Running cells individually makes it easier to spot errors, missing packages, or authentication issues.
-              </div>
-                <div class="four-grid">
-                    <div class="step-actions offscreen">
-                        <img src=""/>
-                    </div>
-                  <div class="step-note offscreen">
-                    
-                  </div>
-                </div>
 
-            </div>
-          </div>
-        </div>
+
+
+
+          <div class="step-item" style="display: none;">
+              <div class="step-marker">
+                  <h2>4</h2>
+                  <svg class="offscreen"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                  </svg>
+              </div>
+              <div class="step-panel">
+                  <div class="step-topline">
+                      <span class="step-label">Step 4</span>
+                      <span class="step-status">Required</span>
+                  </div>
+                  <h3 class="step-title">Connect to Cloudflare - <span class="processing smaller">Optional </span></h3>
+                  <p class="step-text">
+                      Enabling Cloudflare allows public access to the app from the internet
+                  </p>
+                  <br/>
+                  <div class="step-actions">
+                    <div class="three-grid">
+                      <div class="toggle-row"> 
+                        <label class="toggle large">
+                          <input id="conn_toggle" type="checkbox" onclick="">
+                          <span class="slider in_process" id="conn_message">Disconnected &nbsp;</span>
+                        </label>
+                      </div>
+                      <div class="step-note " style="margin: 0px; ">
+                        <div style="position: relative;">
+                          <div id="loader-container" class="loader-container hidden">
+                            <div class="spinner"></div>
+                          </div>
+                        </div>
+                        <div class="copy-container offscreen" id="published_container" >
+                            <div id="published_URL">https://cosmetic-longer-mines-sie.trycloudflare.com</div>
+                            <button class="copy-btn" id="copyBtn">&#10697;</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+        </div>      
+
       </div>
 
       <div class="toolbar offscreen">
@@ -1443,6 +1479,9 @@
     </div>
 
     <script>
+
+
+        const isBlank = (str) => !str || str.trim().length === 0;
 
         // Send Config to connected Google Drive
         // ------------------------------------------------------------------
@@ -1457,10 +1496,11 @@
             return;
           }
 
+          const projectTitle = document.getElementById("project_title").value;
           const projectUrl = document.getElementById("project_url").value;
           const datasetVersion = document.getElementById("dataset_version").value;
 
-          const url = `/drive/upload-config?project_url=${encodeURIComponent(projectUrl)}&dataset_version=${datasetVersion}`;
+          const url = `/drive/upload-config?project_title=${projectTitle}&project_url=${encodeURIComponent(projectUrl)}&dataset_version=${datasetVersion}`;
 
 
 
@@ -1678,6 +1718,7 @@
           }
 
           const payload = {
+            project_title: document.getElementById("project_title").value,
             project_url: document.getElementById("project_url").value,
             dataset_version: parseInt(document.getElementById("dataset_version").value),
             yolo_version: document.getElementById("yolo_version").value,
@@ -1716,6 +1757,7 @@
           //const fields = document.querySelectorAll("[required]");
 
           const fields = [
+            document.getElementById("project_title"),
             document.getElementById("project_url"),
             document.getElementById("dataset_version"),
             document.getElementById("yolo_version"),
@@ -1894,6 +1936,28 @@
           }, 3000);
         }
 
+
+        // Funtion to Execute Dataset Search
+        function datasetSearch(){
+
+            const search_term = document.getElementById("dataset_search").value;
+
+            if (isBlank(search_term)){
+              showFormAlert("You must enter a search term",1);
+              document.getElementById("dataset_search").classList.add("input-error");
+              return;
+            }
+
+            const project_type = document.getElementById("project_type").value;
+            const project_model_version = document.getElementById("project_model_version").value;
+            const min_image_count = " images>"+document.getElementById("min_image_count").value;
+            
+            const query = encodeURIComponent(search_term+project_type+project_model_version+min_image_count);
+            console.log(query)
+            //window.location.href = `https://universe.roboflow.com/search?q=${query}`;
+            window.open(`https://universe.roboflow.com/search?q=${query}`, "_blank");
+        }
+
         // ------------------------------------------------------------------
         // Document Listeners
         // ------------------------------------------------------------------
@@ -1916,9 +1980,25 @@
         // ------------------------------------------------------------------
         document.getElementById("dataset_search").addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
-            const query = encodeURIComponent(this.value);
-            //window.location.href = `https://universe.roboflow.com/search?q=${query}`;
-            window.open(`https://universe.roboflow.com/search?q=${query}`, "_blank");
+            datasetSearch();
+          }
+        });
+
+        document.getElementById("project_type").addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            datasetSearch();
+          }
+        });
+
+        document.getElementById("project_model_version").addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            datasetSearch();
+          }
+        });
+
+        document.getElementById("min_image_count").addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            datasetSearch();
           }
         });
 
