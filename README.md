@@ -47,7 +47,9 @@ The app uses opencv-python, which is installed via pip.
 However, video/stream functionality depends on system codecs (provided by FFmpeg).
 
 # Start up
+```bash
 python -m venv .venv
 source .venv/bin/activate   # mac/linux
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
