@@ -1,11 +1,12 @@
 {
-  "Project_Title": "Dhilons Crime",
-  "Roboflow_Project_URL": "https://universe.roboflow.com/fyp-wyejr/suspicious-activity-wpj4t",
+  "Project_Title": "gfs",
+  "Roboflow_Project_URL": "https://universe.roboflow.com/workspace-wswxh/parking-lot-jqsj2",
   "Roboflow_Dataset_Version": 1,
   "YOLO_Version": "yolov8",
   "YOLO_Size": "s",
   "Epochs": 30,
   "Batches": 16,
   "Learning_Rate": 0.01,
-  "Image_Size": 640
+  "Image_Size": 640,
+  "Min_Train_Images": 3000
 }

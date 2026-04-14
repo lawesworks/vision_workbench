@@ -167,6 +167,7 @@ class TrainConfig(BaseModel):
     batches: int
     learning_rate: float
     image_size: int
+    min_train_images: int
     #roboflow_api_key: str
 
 
@@ -182,6 +183,7 @@ def save_config(config: TrainConfig):
         "Batches": config.batches,
         "Learning_Rate": config.learning_rate,
         "Image_Size": config.image_size,
+        "Min_Train_Images": config.min_train_images
         #"Roboflow_API_Key": config.roboflow_api_key
     }
 
@@ -196,12 +198,13 @@ class RoboflowConfigResponse(BaseModel):
     Project_Title: str
     Roboflow_Project_URL: str
     Roboflow_Dataset_Version: int
-    YOLO_Version: str
+    YOLO_Version: str   
     YOLO_Size: str
     Config_Epochs: int
     Config_Batches: int
     Config_Learning_Rate: float
     Config_Image_Size: int
+    Config_Min_Train_Images: int
     #Roboflow_API_Key: str
 
 
@@ -228,6 +231,7 @@ def get_roboflow_config():
             "Config_Batches": cfg["Batches"],
             "Config_Learning_Rate": cfg["Learning_Rate"],
             "Config_Image_Size": cfg["Image_Size"],
+            "Config_Min_Train_Images": cfg["Min_Train_Images"],
             #"Roboflow_API_Key": cfg["Roboflow_API_Key"],
             #"Roboflow_API_Key": "*" * len(cfg["Roboflow_API_Key"]),
         }

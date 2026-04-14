@@ -938,7 +938,9 @@
             </div>
             <h3>Roboflow Account</h3>
             <p>
-              Required for retrieving your API key and connecting the notebook in order to download datasets.
+              Required for retrieving your API key and connecting the notebook in order to download datasets.  
+              Visit the <a style="text-decoration: none;" href="https://docs.roboflow.com/developer/authentication/find-your-roboflow-api-key#retrieve-an-api-key" target="_blank"><strong>API Guide</strong> </a>
+              to learn more.
             </p>
           </div>
           
@@ -950,7 +952,11 @@
             </div>
             <h3>Google Account</h3>
             <p>
-              Required to open and run Google Colab.  Once you acquire Roboflow API Key, store it as a Colab Key Secret.
+              Required to open and run Google Colab.  
+              Store Roboflow API Key as a Colab Secret called <span class="small" ><strong>"ROBOFLOW_API_KEY"</strong></span>.  
+              Visit <a style="text-decoration: none;" href="https://www.youtube.com/watch?v=LPa51KxqUAw" target="_blank">
+                          <strong>Secrets Guide</strong> 
+                       </a>
             </p>
           </div>
 
@@ -1129,15 +1135,15 @@
                     </select>
                   </div>
                   <div class="config-field">
-                    <label for="min_image_count">Min. Images</label>
+                    <label for="min_train_images">Min. Images</label>
                     <input
                       type="number"
-                      id="min_image_count"
-                      name="min_image_count"
+                      id="min_train_images"
+                      name="min_train_images"
                       min="100"
                       step="100"
                       placeholder="100"
-                      value="1300"
+                      value="300"
                       required
                     />
                   </div>
@@ -1219,7 +1225,7 @@
 
 
                 <div class="config-field" >
-                  <label for="project_title">Your Project Name</label>
+                  <label for="project_title">Your Cusotm Model's Name</label>
                   <input
                     type="text"
                     id="project_title"
@@ -1231,7 +1237,7 @@
                   />
                 </div>
 
-                <div class="config-field ">
+                <div class="config-field offscreen">
                   <label for="project_tags">Tags <span class="processing">( comma separated )</span></label>
                   <input
                     type="text"
@@ -1727,6 +1733,7 @@
             batches: parseInt(document.getElementById("batches").value),
             learning_rate: parseFloat(document.getElementById("learning_rate").value),
             image_size: parseFloat(document.getElementById("image_size").value),
+            min_train_images: document.getElementById("min_train_images").value
             //roboflow_api_key: document.getElementById("roboflow_api_key").value
           };
 
@@ -1765,6 +1772,7 @@
             document.getElementById("epochs"),
             document.getElementById("learning_rate"),
             document.getElementById("batches"),
+            document.getElementById("min_train_images"),
             //document.getElementById("roboflow_api_key")
           ];
 
@@ -1950,9 +1958,9 @@
 
             const project_type = document.getElementById("project_type").value;
             const project_model_version = document.getElementById("project_model_version").value;
-            const min_image_count = " images>"+document.getElementById("min_image_count").value;
+            const min_train_images = " images>"+document.getElementById("min_train_images").value;
             
-            const query = encodeURIComponent(search_term+project_type+project_model_version+min_image_count);
+            const query = encodeURIComponent(search_term+project_type+project_model_version+min_train_images);
             console.log(query)
             //window.location.href = `https://universe.roboflow.com/search?q=${query}`;
             window.open(`https://universe.roboflow.com/search?q=${query}`, "_blank");
@@ -1996,7 +2004,7 @@
           }
         });
 
-        document.getElementById("min_image_count").addEventListener("keydown", function (event) {
+        document.getElementById("min_train_images").addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
             datasetSearch();
           }
